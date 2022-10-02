@@ -1,0 +1,124 @@
+CMAKE_TOOLCHAIN_FILE_x86_64-unknown-linux-gnu = None
+CMAKE_TOOLCHAIN_FILE_x86_64_unknown_linux_gnu = None
+HOST_CMAKE_TOOLCHAIN_FILE = None
+CMAKE_TOOLCHAIN_FILE = None
+CMAKE_GENERATOR_x86_64-unknown-linux-gnu = None
+CMAKE_GENERATOR_x86_64_unknown_linux_gnu = None
+HOST_CMAKE_GENERATOR = None
+CMAKE_GENERATOR = None
+CMAKE_PREFIX_PATH_x86_64-unknown-linux-gnu = None
+CMAKE_PREFIX_PATH_x86_64_unknown_linux_gnu = None
+HOST_CMAKE_PREFIX_PATH = None
+CMAKE_PREFIX_PATH = None
+CMAKE_x86_64-unknown-linux-gnu = None
+CMAKE_x86_64_unknown_linux_gnu = None
+HOST_CMAKE = None
+CMAKE = None
+running: "cmake" "/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc" "-DDLLTOOL=dlltool" "-DLIBUSB_INCLUDE_DIRS=/home/random/Projects/charlie-rs/target/debug/build/usb-compat-01-sys-dde48ed253cdd80a/out/include" "-DBUILD_UTILS=OFF" "-DBUILD_EXAMPLES=OFF" "-DBUILD_SHARED_LIBS=OFF" "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/build/libnfc" "-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/build/libnfc" "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/build/libnfc" "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/build/libnfc" "-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/build/libnfc" "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/build/libnfc" "-DLIBNFC_LOG=OFF" "-DLIBNFC_CONFFILES_MODE=OFF" "-DLIBNFC_ENVVARS=OFF" "-DLIBNFC_DRIVER_PCSC=OFF" "-DLIBNFC_DRIVER_ACR122_PCSC=OFF" "-DLIBNFC_DRIVER_ACR122_USB=ON" "-DLIBNFC_DRIVER_ACR122S=ON" "-DLIBNFC_DRIVER_ARYGON=ON" "-DLIBNFC_DRIVER_PN532_UART=ON" "-DLIBNFC_DRIVER_PN53X_USB=ON" "-DLIBUSB_LIBRARIES=/home/random/Projects/charlie-rs/target/debug/build/usb-compat-01-sys-dde48ed253cdd80a/out/libusb.a;/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb.a" "-DLIBUSB_FOUND=TRUE" "-DCMAKE_INSTALL_PREFIX=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out" "-DCMAKE_C_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64" "-DCMAKE_C_COMPILER=/usr/bin/cc" "-DCMAKE_CXX_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64" "-DCMAKE_CXX_COMPILER=/usr/bin/c++" "-DCMAKE_ASM_FLAGS= -ffunction-sections -fdata-sections -fPIC -m64" "-DCMAKE_ASM_COMPILER=/usr/bin/cc" "-DCMAKE_BUILD_TYPE=Debug"
+-- The C compiler identification is GNU 12.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Could NOT find Doxygen (missing: DOXYGEN_EXECUTABLE) 
+-- Found LIBUSB: /home/random/Projects/charlie-rs/target/debug/build/usb-compat-01-sys-dde48ed253cdd80a/out/libusb.a;/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb.a /home/random/Projects/charlie-rs/target/debug/build/usb-compat-01-sys-dde48ed253cdd80a/out/include
+-- Found LIBUSB: /home/random/Projects/charlie-rs/target/debug/build/usb-compat-01-sys-dde48ed253cdd80a/out/libusb.a;/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb.a /home/random/Projects/charlie-rs/target/debug/build/usb-compat-01-sys-dde48ed253cdd80a/out/include
+-- Found LIBUSB: /home/random/Projects/charlie-rs/target/debug/build/usb-compat-01-sys-dde48ed253cdd80a/out/libusb.a;/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb.a /home/random/Projects/charlie-rs/target/debug/build/usb-compat-01-sys-dde48ed253cdd80a/out/include
+-- Looking for clock_gettime
+-- Looking for clock_gettime - found
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/build
+running: "cmake" "--build" "." "--target" "install" "--config" "Debug" "--parallel" "12"
+[  4%] Building C object libnfc/CMakeFiles/nfc.dir/nfc.c.o
+[  9%] Building C object libnfc/CMakeFiles/nfc.dir/nfc-emulation.c.o
+[ 14%] Building C object libnfc/CMakeFiles/nfc.dir/mirror-subr.c.o
+[ 19%] Building C object libnfc/CMakeFiles/nfc.dir/nfc-device.c.o
+[ 28%] Building C object libnfc/CMakeFiles/nfc.dir/conf.c.o
+[ 28%] Building C object libnfc/CMakeFiles/nfc.dir/drivers/acr122_usb.c.o
+[ 33%] Building C object libnfc/CMakeFiles/nfc.dir/drivers/acr122s.c.o
+[ 38%] Building C object libnfc/CMakeFiles/nfc.dir/iso14443-subr.c.o
+[ 42%] Building C object libnfc/CMakeFiles/nfc.dir/nfc-internal.c.o
+[ 47%] Building C object libnfc/CMakeFiles/nfc.dir/target-subr.c.o
+[ 52%] Building C object libnfc/CMakeFiles/nfc.dir/drivers/arygon.c.o
+[ 57%] Building C object libnfc/CMakeFiles/nfc.dir/drivers/pn532_i2c.c.o
+[ 61%] Building C object libnfc/CMakeFiles/nfc.dir/drivers/pn532_spi.c.o
+[ 66%] Building C object libnfc/CMakeFiles/nfc.dir/drivers/pn532_uart.c.o
+[ 71%] Building C object libnfc/CMakeFiles/nfc.dir/drivers/pn53x_usb.c.o
+[ 76%] Building C object libnfc/CMakeFiles/nfc.dir/buses/usbbus.c.o
+[ 80%] Building C object libnfc/CMakeFiles/nfc.dir/buses/uart.c.o
+[ 85%] Building C object libnfc/CMakeFiles/nfc.dir/buses/i2c.c.o
+[ 90%] Building C object libnfc/CMakeFiles/nfc.dir/buses/spi.c.o
+[ 95%] Building C object libnfc/CMakeFiles/nfc.dir/chips/pn53x.c.o
+[100%] Linking C shared library libnfc.so
+[100%] Built target nfc
+Install the project...
+-- Install configuration: "Debug"
+-- Installing: /home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/pkgconfig/libnfc.pc
+-- Installing: /home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/cmake/libnfc/LibNFCConfig.cmake
+-- Installing: /home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/cmake/libnfc/LibNFCConfigVersion.cmake
+-- Installing: /home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/cmake/libnfc/UseLibNFC.cmake
+-- Installing: /home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/libnfc.so.6.0.0
+-- Installing: /home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/libnfc.so.6
+-- Installing: /home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/libnfc.so
+-- Installing: /home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/include/nfc/nfc-emulation.h
+-- Installing: /home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/include/nfc/nfc-types.h
+-- Installing: /home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/include/nfc/nfc.h
+cargo:root=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out
+cargo:vendored=1
+cargo:static=1
+cargo:include=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/include
+cargo:version_number=1.8.0
+cargo:rustc-link-lib=nfc
+cargo:rustc-link-search=native=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/build/libnfc
+cargo:rerun-if-env-changed=LIBUDEV_NO_PKG_CONFIG
+cargo:rerun-if-env-changed=PKG_CONFIG_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG
+cargo:rerun-if-env-changed=PKG_CONFIG
+cargo:rerun-if-env-changed=LIBUDEV_STATIC
+cargo:rerun-if-env-changed=LIBUDEV_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_STATIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_SYSROOT_DIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR
+cargo:rerun-if-env-changed=SYSROOT
+cargo:rerun-if-env-changed=LIBUDEV_STATIC
+cargo:rerun-if-env-changed=LIBUDEV_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_STATIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_DYNAMIC
+cargo:rustc-link-search=native=/usr/lib
+cargo:rustc-link-lib=udev
+cargo:rerun-if-env-changed=PKG_CONFIG_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG
+cargo:rerun-if-env-changed=PKG_CONFIG
+cargo:rerun-if-env-changed=LIBUDEV_STATIC
+cargo:rerun-if-env-changed=LIBUDEV_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_STATIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_SYSROOT_DIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR
+cargo:rustc-link-lib=udev

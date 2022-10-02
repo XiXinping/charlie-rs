@@ -1,0 +1,11 @@
+prefix=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out
+exec_prefix=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out
+libdir=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib
+includedir=/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/include
+
+Name: libnfc
+Description: Near Field Communication (NFC) library
+Version: 1.8.0
+Requires: libusb,libusb
+Libs: -L${libdir} -lnfc
+Cflags: -I${includedir}

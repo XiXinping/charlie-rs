@@ -1,0 +1,1 @@
+/home/random/Projects/charlie-rs/target/debug/libcharlie.rlib: /home/random/Projects/charlie-rs/src/checksums.rs /home/random/Projects/charlie-rs/src/lib.rs /home/random/Projects/charlie-rs/src/mifare.rs

@@ -2,16 +2,18 @@
 #![allow(unused)]
 extern crate anyhow;
 extern crate nfc1 as nfc;
+extern crate serde;
 mod checksums;
 mod mifare;
-// use anyhow::{anyhow, Context as AnyhowContext};
 use anyhow::Result;
 pub use mifare::{find_card, NfcReader};
 use mifare::{MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
+use serde::Serialize;
 use std::time::Duration;
 use time::{self, macros::format_description, Date, PrimitiveDateTime, Time};
 
+#[derive(Serialize)]
 pub struct CharlieCard {
     pub uid: [u8; 4],
     pub serial_num: u32,
@@ -151,7 +153,7 @@ impl CharlieCard {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct Transaction {
     pub timestamp: time::PrimitiveDateTime,
 }

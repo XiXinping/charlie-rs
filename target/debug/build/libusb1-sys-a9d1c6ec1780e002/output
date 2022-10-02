@@ -1,0 +1,100 @@
+cargo:vendored=1
+cargo:static=1
+cargo:include=/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/include
+cargo:rerun-if-env-changed=LIBUDEV_NO_PKG_CONFIG
+cargo:rerun-if-env-changed=PKG_CONFIG_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG
+cargo:rerun-if-env-changed=PKG_CONFIG
+cargo:rerun-if-env-changed=LIBUDEV_STATIC
+cargo:rerun-if-env-changed=LIBUDEV_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_STATIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_SYSROOT_DIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR
+cargo:rerun-if-env-changed=SYSROOT
+cargo:rerun-if-env-changed=LIBUDEV_STATIC
+cargo:rerun-if-env-changed=LIBUDEV_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_STATIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_DYNAMIC
+cargo:rustc-link-search=native=/usr/lib
+cargo:rustc-link-lib=udev
+cargo:rerun-if-env-changed=PKG_CONFIG_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG
+cargo:rerun-if-env-changed=PKG_CONFIG
+cargo:rerun-if-env-changed=LIBUDEV_STATIC
+cargo:rerun-if-env-changed=LIBUDEV_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_STATIC
+cargo:rerun-if-env-changed=PKG_CONFIG_ALL_DYNAMIC
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_PATH
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_LIBDIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64-unknown-linux-gnu
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR_x86_64_unknown_linux_gnu
+cargo:rerun-if-env-changed=HOST_PKG_CONFIG_SYSROOT_DIR
+cargo:rerun-if-env-changed=PKG_CONFIG_SYSROOT_DIR
+Including posix!
+TARGET = Some("x86_64-unknown-linux-gnu")
+OPT_LEVEL = Some("0")
+HOST = Some("x86_64-unknown-linux-gnu")
+CC_x86_64-unknown-linux-gnu = None
+CC_x86_64_unknown_linux_gnu = None
+HOST_CC = None
+CC = None
+CFLAGS_x86_64-unknown-linux-gnu = None
+CFLAGS_x86_64_unknown_linux_gnu = None
+HOST_CFLAGS = None
+CFLAGS = None
+CRATE_CC_NO_DEFAULTS = None
+DEBUG = Some("true")
+CARGO_CFG_TARGET_FEATURE = Some("fxsr,sse,sse2")
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-fno-omit-frame-pointer" "-m64" "-I" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/include" "-I" "libusb/libusb" "-Wall" "-Wextra" "-DPRINTF_FORMAT(a, b)=" "-DENABLE_LOGGING=1" "-DOS_LINUX=1" "-DHAVE_ASM_TYPES_H=1" "-D_GNU_SOURCE=1" "-DHAVE_TIMERFD=1" "-DHAVE_EVENTFD=1" "-DHAVE_SYS_TIME_H=1" "-DHAVE_NFDS_T=1" "-DPLATFORM_POSIX=1" "-DHAVE_CLOCK_GETTIME=1" "-DDEFAULT_VISIBILITY=__attribute__((visibility(\"default\")))" "-DUSE_UDEV=1" "-DHAVE_LIBUDEV=1" "-o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/os/linux_netlink.o" "-c" "libusb/libusb/os/linux_netlink.c"
+exit status: 0
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-fno-omit-frame-pointer" "-m64" "-I" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/include" "-I" "libusb/libusb" "-Wall" "-Wextra" "-DPRINTF_FORMAT(a, b)=" "-DENABLE_LOGGING=1" "-DOS_LINUX=1" "-DHAVE_ASM_TYPES_H=1" "-D_GNU_SOURCE=1" "-DHAVE_TIMERFD=1" "-DHAVE_EVENTFD=1" "-DHAVE_SYS_TIME_H=1" "-DHAVE_NFDS_T=1" "-DPLATFORM_POSIX=1" "-DHAVE_CLOCK_GETTIME=1" "-DDEFAULT_VISIBILITY=__attribute__((visibility(\"default\")))" "-DUSE_UDEV=1" "-DHAVE_LIBUDEV=1" "-o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/os/linux_usbfs.o" "-c" "libusb/libusb/os/linux_usbfs.c"
+exit status: 0
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-fno-omit-frame-pointer" "-m64" "-I" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/include" "-I" "libusb/libusb" "-Wall" "-Wextra" "-DPRINTF_FORMAT(a, b)=" "-DENABLE_LOGGING=1" "-DOS_LINUX=1" "-DHAVE_ASM_TYPES_H=1" "-D_GNU_SOURCE=1" "-DHAVE_TIMERFD=1" "-DHAVE_EVENTFD=1" "-DHAVE_SYS_TIME_H=1" "-DHAVE_NFDS_T=1" "-DPLATFORM_POSIX=1" "-DHAVE_CLOCK_GETTIME=1" "-DDEFAULT_VISIBILITY=__attribute__((visibility(\"default\")))" "-DUSE_UDEV=1" "-DHAVE_LIBUDEV=1" "-o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/os/linux_udev.o" "-c" "libusb/libusb/os/linux_udev.c"
+exit status: 0
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-fno-omit-frame-pointer" "-m64" "-I" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/include" "-I" "libusb/libusb" "-Wall" "-Wextra" "-DPRINTF_FORMAT(a, b)=" "-DENABLE_LOGGING=1" "-DOS_LINUX=1" "-DHAVE_ASM_TYPES_H=1" "-D_GNU_SOURCE=1" "-DHAVE_TIMERFD=1" "-DHAVE_EVENTFD=1" "-DHAVE_SYS_TIME_H=1" "-DHAVE_NFDS_T=1" "-DPLATFORM_POSIX=1" "-DHAVE_CLOCK_GETTIME=1" "-DDEFAULT_VISIBILITY=__attribute__((visibility(\"default\")))" "-DUSE_UDEV=1" "-DHAVE_LIBUDEV=1" "-o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/os/events_posix.o" "-c" "libusb/libusb/os/events_posix.c"
+exit status: 0
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-fno-omit-frame-pointer" "-m64" "-I" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/include" "-I" "libusb/libusb" "-Wall" "-Wextra" "-DPRINTF_FORMAT(a, b)=" "-DENABLE_LOGGING=1" "-DOS_LINUX=1" "-DHAVE_ASM_TYPES_H=1" "-D_GNU_SOURCE=1" "-DHAVE_TIMERFD=1" "-DHAVE_EVENTFD=1" "-DHAVE_SYS_TIME_H=1" "-DHAVE_NFDS_T=1" "-DPLATFORM_POSIX=1" "-DHAVE_CLOCK_GETTIME=1" "-DDEFAULT_VISIBILITY=__attribute__((visibility(\"default\")))" "-DUSE_UDEV=1" "-DHAVE_LIBUDEV=1" "-o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/os/threads_posix.o" "-c" "libusb/libusb/os/threads_posix.c"
+exit status: 0
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-fno-omit-frame-pointer" "-m64" "-I" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/include" "-I" "libusb/libusb" "-Wall" "-Wextra" "-DPRINTF_FORMAT(a, b)=" "-DENABLE_LOGGING=1" "-DOS_LINUX=1" "-DHAVE_ASM_TYPES_H=1" "-D_GNU_SOURCE=1" "-DHAVE_TIMERFD=1" "-DHAVE_EVENTFD=1" "-DHAVE_SYS_TIME_H=1" "-DHAVE_NFDS_T=1" "-DPLATFORM_POSIX=1" "-DHAVE_CLOCK_GETTIME=1" "-DDEFAULT_VISIBILITY=__attribute__((visibility(\"default\")))" "-DUSE_UDEV=1" "-DHAVE_LIBUDEV=1" "-o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/core.o" "-c" "libusb/libusb/core.c"
+exit status: 0
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-fno-omit-frame-pointer" "-m64" "-I" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/include" "-I" "libusb/libusb" "-Wall" "-Wextra" "-DPRINTF_FORMAT(a, b)=" "-DENABLE_LOGGING=1" "-DOS_LINUX=1" "-DHAVE_ASM_TYPES_H=1" "-D_GNU_SOURCE=1" "-DHAVE_TIMERFD=1" "-DHAVE_EVENTFD=1" "-DHAVE_SYS_TIME_H=1" "-DHAVE_NFDS_T=1" "-DPLATFORM_POSIX=1" "-DHAVE_CLOCK_GETTIME=1" "-DDEFAULT_VISIBILITY=__attribute__((visibility(\"default\")))" "-DUSE_UDEV=1" "-DHAVE_LIBUDEV=1" "-o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/descriptor.o" "-c" "libusb/libusb/descriptor.c"
+exit status: 0
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-fno-omit-frame-pointer" "-m64" "-I" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/include" "-I" "libusb/libusb" "-Wall" "-Wextra" "-DPRINTF_FORMAT(a, b)=" "-DENABLE_LOGGING=1" "-DOS_LINUX=1" "-DHAVE_ASM_TYPES_H=1" "-D_GNU_SOURCE=1" "-DHAVE_TIMERFD=1" "-DHAVE_EVENTFD=1" "-DHAVE_SYS_TIME_H=1" "-DHAVE_NFDS_T=1" "-DPLATFORM_POSIX=1" "-DHAVE_CLOCK_GETTIME=1" "-DDEFAULT_VISIBILITY=__attribute__((visibility(\"default\")))" "-DUSE_UDEV=1" "-DHAVE_LIBUDEV=1" "-o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/hotplug.o" "-c" "libusb/libusb/hotplug.c"
+exit status: 0
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-fno-omit-frame-pointer" "-m64" "-I" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/include" "-I" "libusb/libusb" "-Wall" "-Wextra" "-DPRINTF_FORMAT(a, b)=" "-DENABLE_LOGGING=1" "-DOS_LINUX=1" "-DHAVE_ASM_TYPES_H=1" "-D_GNU_SOURCE=1" "-DHAVE_TIMERFD=1" "-DHAVE_EVENTFD=1" "-DHAVE_SYS_TIME_H=1" "-DHAVE_NFDS_T=1" "-DPLATFORM_POSIX=1" "-DHAVE_CLOCK_GETTIME=1" "-DDEFAULT_VISIBILITY=__attribute__((visibility(\"default\")))" "-DUSE_UDEV=1" "-DHAVE_LIBUDEV=1" "-o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/io.o" "-c" "libusb/libusb/io.c"
+exit status: 0
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-fno-omit-frame-pointer" "-m64" "-I" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/include" "-I" "libusb/libusb" "-Wall" "-Wextra" "-DPRINTF_FORMAT(a, b)=" "-DENABLE_LOGGING=1" "-DOS_LINUX=1" "-DHAVE_ASM_TYPES_H=1" "-D_GNU_SOURCE=1" "-DHAVE_TIMERFD=1" "-DHAVE_EVENTFD=1" "-DHAVE_SYS_TIME_H=1" "-DHAVE_NFDS_T=1" "-DPLATFORM_POSIX=1" "-DHAVE_CLOCK_GETTIME=1" "-DDEFAULT_VISIBILITY=__attribute__((visibility(\"default\")))" "-DUSE_UDEV=1" "-DHAVE_LIBUDEV=1" "-o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/strerror.o" "-c" "libusb/libusb/strerror.c"
+exit status: 0
+running: "cc" "-O0" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-fno-omit-frame-pointer" "-m64" "-I" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/include" "-I" "libusb/libusb" "-Wall" "-Wextra" "-DPRINTF_FORMAT(a, b)=" "-DENABLE_LOGGING=1" "-DOS_LINUX=1" "-DHAVE_ASM_TYPES_H=1" "-D_GNU_SOURCE=1" "-DHAVE_TIMERFD=1" "-DHAVE_EVENTFD=1" "-DHAVE_SYS_TIME_H=1" "-DHAVE_NFDS_T=1" "-DPLATFORM_POSIX=1" "-DHAVE_CLOCK_GETTIME=1" "-DDEFAULT_VISIBILITY=__attribute__((visibility(\"default\")))" "-DUSE_UDEV=1" "-DHAVE_LIBUDEV=1" "-o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/sync.o" "-c" "libusb/libusb/sync.c"
+exit status: 0
+AR_x86_64-unknown-linux-gnu = None
+AR_x86_64_unknown_linux_gnu = None
+HOST_AR = None
+AR = None
+running: "ar" "cq" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb.a" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/os/linux_netlink.o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/os/linux_usbfs.o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/os/linux_udev.o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/os/events_posix.o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/os/threads_posix.o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/core.o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/descriptor.o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/hotplug.o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/io.o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/strerror.o" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb/libusb/sync.o"
+exit status: 0
+running: "ar" "s" "/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out/libusb.a"
+exit status: 0
+cargo:rustc-link-lib=static=usb
+cargo:rustc-link-search=native=/home/random/Projects/charlie-rs/target/debug/build/libusb1-sys-a9d1c6ec1780e002/out
+cargo:version_number=1.0.24

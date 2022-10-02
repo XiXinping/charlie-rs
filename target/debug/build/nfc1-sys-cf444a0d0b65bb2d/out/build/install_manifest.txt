@@ -1,0 +1,10 @@
+/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/pkgconfig/libnfc.pc
+/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/cmake/libnfc/LibNFCConfig.cmake
+/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/cmake/libnfc/LibNFCConfigVersion.cmake
+/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/cmake/libnfc/UseLibNFC.cmake
+/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/libnfc.so.6.0.0
+/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/libnfc.so.6
+/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/lib/libnfc.so
+/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/include/nfc/nfc-emulation.h
+/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/include/nfc/nfc-types.h
+/home/random/Projects/charlie-rs/target/debug/build/nfc1-sys-cf444a0d0b65bb2d/out/include/nfc/nfc.h

@@ -1,0 +1,290 @@
+CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc-device.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc-emulation.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc-internal.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/conf.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/iso14443-subr.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/mirror-subr.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/target-subr.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/acr122_usb.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/acr122s.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/arygon.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/pn532_i2c.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/pn532_spi.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/pn532_uart.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/pn53x_usb.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/buses/usbbus.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/buses/uart.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/buses/i2c.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/buses/spi.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at libnfc/CMakeLists.txt:77 (ADD_LIBRARY):
+  Policy CMP0115 is not set: Source file extensions must be explicit.  Run
+  "cmake --help-policy CMP0115" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  File:
+
+    /home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/chips/pn53x.c
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE
+    CMAKE_ASM_COMPILER
+    CMAKE_ASM_FLAGS
+    CMAKE_CXX_COMPILER
+    CMAKE_CXX_FLAGS
+    CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE
+    CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE
+    DLLTOOL
+
+
+make: warning: -j12 forced in submake: resetting jobserver mode.
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc.c: In function ‘nfc_register_driver’:
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc.c:210:105: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  210 |     log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "nfc_register_driver returning NFC_EINVARG");
+      |                                                                                                         ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc-internal.c: In function ‘connstring_decode’:
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc.c: In function ‘nfc_device_validate_modulation’:
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc.c:1308:118: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 1308 |       log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "nfc_device_validate_modulation returning NFC_EINVARG");
+      |                                                                                                                      ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc.c:1312:114: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 1312 |   log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "nfc_device_validate_modulation returning NFC_EINVARG");
+      |                                                                                                                  ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc-internal.c:231:50: warning: ‘[^:]:’ directive output may be truncated writing 5 bytes into a region of size between 3 and 23 [-Wformat-truncation=]
+  231 |   snprintf(format, sizeof(format), "%%%i[^:]:%%%i[^:]:%%%i[^:]", n - 1, n - 1, n - 1);
+      |                                                  ^~~~~
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc-internal.c:231:36: note: directive argument in the range [-2147483648, 2147483646]
+  231 |   snprintf(format, sizeof(format), "%%%i[^:]:%%%i[^:]:%%%i[^:]", n - 1, n - 1, n - 1);
+      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/nfc-internal.c:231:3: note: ‘snprintf’ output between 21 and 51 bytes into a destination of size 32
+  231 |   snprintf(format, sizeof(format), "%%%i[^:]:%%%i[^:]:%%%i[^:]", n - 1, n - 1, n - 1);
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/pn532_i2c.c: In function ‘pn532_i2c_wait_rdyframe’:
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/pn532_i2c.c:485:57: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  485 |               "Wait for a READY frame has been aborted.");
+      |                                                         ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/pn532_i2c.c:514:59: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  514 |                     "timeout reached with no READY frame.");
+      |                                                           ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/pn532_i2c.c: In function ‘pn532_i2c_receive’:
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/pn532_i2c.c:559:13: warning: unused variable ‘errorCode’ [-Wunused-variable]
+  559 |     uint8_t errorCode = frameBuf[5];
+      |             ^~~~~~~~~
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/pn532_i2c.c:569:90: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  569 |       log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_ERROR, "Length checksum mismatch");
+      |                                                                                          ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/pn532_uart.c: In function ‘pn532_uart_open’:
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/drivers/pn532_uart.c:293:95: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  293 |     log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_ERROR, "pn53x_check_communication error");
+      |                                                                                               ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/buses/spi.c: In function ‘spi_set_speed’:
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/buses/spi.c:109:102: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  109 |   if (ret == -1)  log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "Error setting SPI speed.");
+      |                                                                                                      ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/buses/spi.c: In function ‘spi_set_mode’:
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/buses/spi.c:120:101: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  120 |   if (ret == -1)  log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "Error setting SPI mode.");
+      |                                                                                                     ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/buses/spi.c: In function ‘spi_get_speed’:
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/buses/spi.c:132:101: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+  132 |   if (ret == -1) log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "Error reading SPI speed.");
+      |                                                                                                     ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/chips/pn53x.c: In function ‘pn53x_initiator_select_passive_target_ext’:
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/chips/pn53x.c:1212:113: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 1212 |           log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "got expected timeout on iClass activate all");
+      |                                                                                                                 ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/chips/pn53x.c:1222:95: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 1222 |           log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "timeout on iClass anticol");
+      |                                                                                               ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/chips/pn53x.c:1227:95: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 1227 |           log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "timeout on iClass get UID");
+      |                                                                                               ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/chips/pn53x.c: In function ‘pn53x_ISO14443B_ICLASS_is_present’:
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/chips/pn53x.c:2261:107: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 2261 |     log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "got expected timeout on iClass activate all");
+      |                                                                                                           ^
+/home/random/.cargo/registry/src/github.com-1ecc6299db9ec823/nfc1-sys-0.2.1/vendor/nfc/libnfc/chips/pn53x.c:2267:89: warning: ISO C99 requires at least one argument for the "..." in a variadic macro
+ 2267 |     log_put(LOG_GROUP, LOG_CATEGORY, NFC_LOG_PRIORITY_DEBUG, "timeout on iClass anticol");
+      |                                                                                         ^

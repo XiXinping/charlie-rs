@@ -7,7 +7,8 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.65"
-nfc1 = "0.4.1"
+nfc1 = { version = "0.4.1", vendored = false }
 ouroboros = "0.15.5"
-time = { version = "0.3.11", features = ["macros", "formatting"] }
+serde = { version = "1.0.145", features = ["derive"] }
+time = { version = "0.3.11", features = ["macros", "formatting", "serde"] }
 

@@ -7,6 +7,7 @@ use nfc::{
     Timeout,
 };
 use ouroboros::self_referencing;
+use serde::Serialize;
 use std::error::Error;
 use std::fmt::{self, Display, Formatter};
 use std::thread;
@@ -39,7 +40,7 @@ impl<'a> NfcReader<'a> {
         Ok(reader)
     }
 }
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Serialize)]
 pub struct ManufacturerBlock {
     uid: [u8; 4],
     bcc: u8,
@@ -48,26 +49,28 @@ pub struct ManufacturerBlock {
     data: [u8; 8],
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Serialize)]
 pub struct DataBlock {
     pub data: [u8; 16],
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Serialize)]
 pub struct TrailerBlock {
     key_a: [u8; 6],
     access_bits: [u8; 3],
     key_b: [u8; 6],
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Serialize)]
 pub struct Sector {
     pub sector_num: u8,
     pub data_blocks: [DataBlock; 3],
     pub trailer_block: TrailerBlock,
 }
 
+#[derive(Serialize)]
 pub struct MifareCard {
+    #[serde(skip_serializing)]
     target: Target,
     pub sectors: [Option<Sector>; 16],
 }
