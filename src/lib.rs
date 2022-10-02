@@ -12,7 +12,7 @@ use nfc::{target_info::TargetInfo, Target};
 use serde::Serialize;
 use std::time::Duration;
 use time::{self, macros::format_description, serde::timestamp, Date, PrimitiveDateTime, Time};
-use time_tz::{PrimitiveDateTimeExt, timezones::db::america::NEW_YORK}
+use time_tz::{timezones::db::america::NEW_YORK, PrimitiveDateTimeExt};
 
 #[derive(Serialize)]
 pub struct CharlieCard {
@@ -167,7 +167,9 @@ impl Transaction {
         let epoch_start = PrimitiveDateTime::new(
             Date::from_ordinal_date(2003, 1).unwrap(),
             Time::from_hms(0, 0, 0).unwrap(),
-        ).assume_timezone(NEW_YORK).unwrap();
+        )
+        .assume_timezone(NEW_YORK)
+        .unwrap();
         let raw_timestamp_seconds = Duration::from_secs(raw_timestamp as u64 * 60);
 
         Transaction {
