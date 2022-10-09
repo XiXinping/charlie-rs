@@ -243,9 +243,10 @@ impl MifareCard {
         )
         .assume_timezone(NEW_YORK)
         .unwrap();
-        let raw_timestamp_seconds = Duration::from_secs(raw_timestamp as u64 * 60);
+        let issue_date = epoch_start + Duration::from_secs(raw_timestamp as u64 * 60);
 
-        epoch_start + raw_timestamp_seconds + Duration::from_
+        // CharlieCards expire 10 years after their date of issue
+        issue_date.replace_year(issue_date.year() + 10).unwrap()
     }
     fn transaction_history(&self) -> Vec<Transaction> {
         // CharlieCards keep a log of the last 10 transactions and their
