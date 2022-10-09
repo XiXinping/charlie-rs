@@ -11,7 +11,10 @@ use mifare::{MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
 use serde::Serialize;
 use std::time::Duration;
-use time::{self, macros::format_description, serde::timestamp, Date, PrimitiveDateTime, Time};
+use time::{
+    self, macros::format_description, serde::timestamp, Date, OffsetDateTime, PrimitiveDateTime,
+    Time,
+};
 use time_tz::{timezones::db::america::NEW_YORK, PrimitiveDateTimeExt};
 
 #[derive(Serialize)]
@@ -53,11 +56,11 @@ impl CharlieCard {
             card_data.read_sector(device, i)?;
         }
 
-        let num_uses = num_uses(&card_data);
+        let num_uses = card_data.num_uses();
 
-        let money_value = money_value(&card_data);
+        let money_value = card_data.money_value();
 
-        let transaction_history = transaction_history(&card_data);
+        let transaction_history = card_data.transaction_history();
 
         Ok(CharlieCard {
             uid,
@@ -157,7 +160,7 @@ impl CharlieCard {
 #[derive(Debug, Clone, Serialize)]
 pub struct Transaction {
     #[serde(with = "timestamp")]
-    pub timestamp: time::OffsetDateTime,
+    pub timestamp: OffsetDateTime,
 }
 
 impl Transaction {
@@ -178,89 +181,103 @@ impl Transaction {
     }
 }
 
-pub fn num_uses(card_data: &MifareCard) -> u16 {
-    // blocks 5 and 6 contain variables that record the number of uses
-    let block5 = card_data.sectors[1].unwrap().data_blocks[1];
-    let block6 = card_data.sectors[1].unwrap().data_blocks[2];
+impl MifareCard {
+    // there are two transaction sectors: sector 2 and 3
+    // the active sector is the sector the fare machine will look at and
+    // stores current transaction info, such as the balance, expiration date,
+    // and various other information
+    // meanwhile, the inactive sector stores info about the last transaction
+    fn active_sector(&self) -> usize {
+        // the variables that count the number of uses are stored in blocks 5
+        // and 6
+        let block5 = self.sectors[1].unwrap().data_blocks[1];
+        let block6 = self.sectors[1].unwrap().data_blocks[2];
 
-    // the first two bytes of each block is the count variable
-    let block5_count = block5.data[0] as u16 * 256 + block5.data[1] as u16;
-    let block6_count = block6.data[0] as u16 * 256 + block6.data[1] as u16;
+        // the first count variable on block 5 corresponds to sector 2
+        let first_count = block5.data[0] as u16 * 256 + block5.data[1] as u16;
+        // similarly, the second count variable on block 5 corresponds to
+        // sector 3
+        let second_count = block6.data[0] as u16 * 256 + block6.data[1] as u16;
 
-    // the variable with the lowest value minus one is the number of uses
-    if block5_count < block6_count {
-        block5_count - 1
-    } else {
-        block6_count - 1
-    }
-}
-
-pub fn money_value(card_data: &MifareCard) -> u16 {
-    // the variables that count the number of uses are stored in blocks 5 and 6
-    let block5 = card_data.sectors[1].unwrap().data_blocks[1];
-    let block6 = card_data.sectors[1].unwrap().data_blocks[2];
-
-    // the actual money values are stored on blocks 9 and 13
-    // one of the variables
-    let block9 = card_data.sectors[2].unwrap().data_blocks[1];
-    let block13 = card_data.sectors[3].unwrap().data_blocks[1];
-
-    // the first count variable on block 5 corresponds to the first money
-    // variable on block 9
-    let first_count = block5.data[0] as u16 * 256 + block5.data[1] as u16;
-    // similarly, the second count variable on block 5 corresponds to the
-    // second money varialbe on block 13
-    let second_count = block6.data[0] as u16 * 256 + block6.data[1] as u16;
-
-    let first_money_variable = block9.data[5] as u16 * 256 + block9.data[6] as u16;
-    let second_money_variable = block13.data[5] as u16 * 256 + block13.data[6] as u16;
-
-    // the lowest count variable corresponds to the current money value
-    // for example, if the first count variable is lower than the second count
-    // variable, then the current money value is stored in the first money
-    // variable, while the previous money value is stored in the second money
-    // variable
-    if first_count < second_count {
-        first_money_variable >> 1
-    } else {
-        // likewise, if the second count variable is lower than the fist count
-        // variable, then the current money value must be stored in the second
-        // money variable, while the previous money value is stored in the
-        // first money variable
-        second_money_variable >> 1
-    }
-}
-
-fn transaction_history(card_data: &MifareCard) -> Vec<Transaction> {
-    // CharlieCards keep a log of the last 10 transactions and their timestamps
-    // the timestamps record the number of minutes between midnight on January
-    // 1, 2003 and the time of the transaction
-    let mut raw_timestamps = Vec::new();
-    for sector_num in 6..8 {
-        for (_, block) in card_data.sectors[sector_num]
-            .unwrap()
-            .data_blocks
-            .iter()
-            .enumerate()
-        {
-            // each block has two timestamps, each of which are made up of three bytes
-            let first_timestamp = (block.data[0] as u32 * 65536)
-                + (block.data[1] as u32 * 256)
-                + (block.data[2] as u32);
-            let second_timestamp = (block.data[7] as u32 * 65536)
-                + (block.data[8] as u32 * 256)
-                + (block.data[9] as u32);
-            raw_timestamps.push(first_timestamp);
-            raw_timestamps.push(second_timestamp);
+        // the lower count variable corresponds to the active sector
+        // for example, if the first count variable is lower than the second
+        // count variable, then the second sector is the active sector, while
+        // the third sector is inactive and stores the previous transaction
+        // info
+        if first_count < second_count {
+            2
+        } else {
+            3
         }
     }
-    // remove any blank timestamps
-    raw_timestamps = raw_timestamps.into_iter().filter(|t| *t != 0).collect();
-    // sort the timestamps in descending order
-    raw_timestamps.sort_by(|a, b| b.cmp(a));
+    pub fn num_uses(&self) -> u16 {
+        if self.active_sector() == 2 {
+            let block5 = self.sectors[1].unwrap().data_blocks[1];
+            // the first two bytes of each block is the count variable
+            // the variable with the lowest value minus one is the number of uses
+            return block5.data[0] as u16 * 256 + block5.data[1] as u16 - 1;
+        } else {
+            let block6 = self.sectors[1].unwrap().data_blocks[2];
+            return block6.data[0] as u16 * 256 + block6.data[1] as u16 - 1;
+        }
+    }
+    pub fn money_value(&self) -> u16 {
+        let active_sector = self.active_sector();
+        // the actual money values are stored on blocks 9 and 13
+        let money_block = self.sectors[active_sector].unwrap().data_blocks[1];
+        // reads the two byte money variable, needs to be bitshifted once to
+        // the right because the money value is stored in half cents
+        money_block.data[5] as u16 * 256 + money_block.data[6] as u16 >> 1
+    }
 
-    // generate a transaction for each timestamp
-    raw_timestamps.into_iter().map(Transaction::new).collect()
+    pub fn expiration_date(&self) -> OffsetDateTime {
+        let active_sector = self.active_sector();
+        let expiration_block = self.sectors[active_sector].unwrap().data_blocks[0];
+        let raw_timestamp = (expiration_block.data[6] as u32 * 65536)
+            + (expiration_block.data[7] as u32 * 256)
+            + (expiration_block.data[8] as u32);
+
+        let epoch_start = PrimitiveDateTime::new(
+            Date::from_ordinal_date(2003, 1).unwrap(),
+            Time::from_hms(0, 0, 0).unwrap(),
+        )
+        .assume_timezone(NEW_YORK)
+        .unwrap();
+        let raw_timestamp_seconds = Duration::from_secs(raw_timestamp as u64 * 60);
+
+        epoch_start + raw_timestamp_seconds + Duration::from_
+    }
+    fn transaction_history(&self) -> Vec<Transaction> {
+        // CharlieCards keep a log of the last 10 transactions and their
+        // timestamps the timestamps record the number of minutes between
+        // midnight on January 1, 2003 and the time of the transaction
+        let mut raw_timestamps = Vec::new();
+        for sector_num in 6..8 {
+            for (_, block) in self.sectors[sector_num]
+                .unwrap()
+                .data_blocks
+                .iter()
+                .enumerate()
+            {
+                // each block has two three-byte timestamps
+                let first_timestamp = (block.data[0] as u32 * 65536)
+                    + (block.data[1] as u32 * 256)
+                    + (block.data[2] as u32);
+                let second_timestamp = (block.data[7] as u32 * 65536)
+                    + (block.data[8] as u32 * 256)
+                    + (block.data[9] as u32);
+                raw_timestamps.push(first_timestamp);
+                raw_timestamps.push(second_timestamp);
+            }
+        }
+        // remove any blank timestamps
+        raw_timestamps = raw_timestamps.into_iter().filter(|t| *t != 0).collect();
+        // sort the timestamps in descending order
+        raw_timestamps.sort_by(|a, b| b.cmp(a));
+
+        // generate a transaction for each timestamp
+        raw_timestamps.into_iter().map(Transaction::new).collect()
+    }
 }
 
 pub fn print_charlie() {
