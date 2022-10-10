@@ -11,8 +11,8 @@ use mifare::{MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
 use serde::Serialize;
 use time::{
-    macros::datetime, macros::format_description, serde::timestamp, Date, Duration, OffsetDateTime,
-    PrimitiveDateTime, Time,
+    macros::datetime, macros::format_description, serde::timestamp, Date, Duration, Month,
+    OffsetDateTime, PrimitiveDateTime, Time,
 };
 
 // the CharlieCard epoch begins on midnight on January 1st
@@ -251,14 +251,10 @@ impl MifareCard {
 
         let issue_date = CHARLIE_EPOCH + Duration::seconds(raw_timestamp as i64 * 60);
 
-        // student cards last one school year and expire one year after issue
+        // student cards last one school year and expire at the end of August
+        // the next year
         if let CharlieCardType::Student = card_type {
-            return issue_date
-                .replace_year(issue_date.year() + 1)
-                .unwrap()
-                .date()
-                .previous_day()
-                .unwrap();
+            return Date::from_calendar_date(issue_date.year() + 1, Month::August, 31).unwrap();
         }
         // CharlieCards issued before 2011 expire 7 years after they're issued
         if issue_date < datetime!(2011-01-01 0:00 -5) {
