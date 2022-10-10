@@ -10,12 +10,13 @@ pub use mifare::{find_card, NfcReader};
 use mifare::{MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
 use serde::Serialize;
-use std::time::Duration;
 use time::{
-    self, macros::format_description, serde::timestamp, Date, OffsetDateTime, PrimitiveDateTime,
-    Time,
+    macros::datetime, macros::format_description, serde::timestamp, Date, Duration, OffsetDateTime,
+    PrimitiveDateTime, Time,
 };
-use time_tz::{timezones::db::america::NEW_YORK, PrimitiveDateTimeExt};
+
+// the CharlieCard epoch begins on midnight on January 1st
+static CHARLIE_EPOCH: OffsetDateTime = datetime!(2003-01-01 0:00 -5);
 
 #[derive(Serialize)]
 pub struct CharlieCard {
@@ -24,6 +25,7 @@ pub struct CharlieCard {
     pub money_value: u16,
     pub num_uses: u16,
     transaction_history: Vec<Transaction>,
+    pub expiration_date: Date,
     card_data: MifareCard,
 }
 
@@ -56,18 +58,13 @@ impl CharlieCard {
             card_data.read_sector(device, i)?;
         }
 
-        let num_uses = card_data.num_uses();
-
-        let money_value = card_data.money_value();
-
-        let transaction_history = card_data.transaction_history();
-
         Ok(CharlieCard {
             uid,
             serial_num,
-            num_uses,
-            money_value,
-            transaction_history,
+            num_uses: card_data.num_uses(),
+            money_value: card_data.money_value(),
+            transaction_history: card_data.transaction_history(),
+            expiration_date: card_data.expiration_date(),
             card_data,
         })
     }
@@ -143,17 +140,25 @@ impl CharlieCard {
             // get the timestamp of the transaction
             let transaction_timestamp = transaction.timestamp;
             // format the timestamp into something that's not ugly as sin
-            let format_item = format_description!(
+            let datetime_format = format_description!(
                 "[weekday], [month repr:long] [day], [year] [hour repr:12]:[minute] [period] "
             );
             println!(
-                "Last Transaction: {}\n",
-                transaction_timestamp.format(&format_item).unwrap()
+                "Last Transaction: {}",
+                transaction_timestamp.format(&datetime_format).unwrap()
             );
         } else {
             // if there aren't any transactions yet
             println!("Last Transaction: Never");
         };
+        println!(
+            "Expiration Date: {}\n",
+            self.expiration_date
+                .format(&format_description!(
+                    "[weekday], [month repr:long] [day], [year]"
+                ))
+                .unwrap()
+        );
     }
 }
 
@@ -166,17 +171,10 @@ pub struct Transaction {
 impl Transaction {
     // generates a new transaction based on the time it occurred
     fn new(raw_timestamp: u32) -> Transaction {
-        // the CharlieCard epoch begins on midnight on January 1st
-        let epoch_start = PrimitiveDateTime::new(
-            Date::from_ordinal_date(2003, 1).unwrap(),
-            Time::from_hms(0, 0, 0).unwrap(),
-        )
-        .assume_timezone(NEW_YORK)
-        .unwrap();
-        let raw_timestamp_seconds = Duration::from_secs(raw_timestamp as u64 * 60);
+        let raw_timestamp_seconds = Duration::seconds(raw_timestamp as i64 * 60);
 
         Transaction {
-            timestamp: epoch_start + raw_timestamp_seconds,
+            timestamp: CHARLIE_EPOCH + raw_timestamp_seconds,
         }
     }
 }
@@ -230,23 +228,32 @@ impl MifareCard {
         money_block.data[5] as u16 * 256 + money_block.data[6] as u16 >> 1
     }
 
-    pub fn expiration_date(&self) -> OffsetDateTime {
+    pub fn expiration_date(&self) -> Date {
         let active_sector = self.active_sector();
         let expiration_block = self.sectors[active_sector].unwrap().data_blocks[0];
         let raw_timestamp = (expiration_block.data[6] as u32 * 65536)
             + (expiration_block.data[7] as u32 * 256)
             + (expiration_block.data[8] as u32);
 
-        let epoch_start = PrimitiveDateTime::new(
-            Date::from_ordinal_date(2003, 1).unwrap(),
-            Time::from_hms(0, 0, 0).unwrap(),
-        )
-        .assume_timezone(NEW_YORK)
-        .unwrap();
-        let issue_date = epoch_start + Duration::from_secs(raw_timestamp as u64 * 60);
+        let issue_date = CHARLIE_EPOCH + Duration::seconds(raw_timestamp as i64 * 60);
 
-        // CharlieCards expire 10 years after their date of issue
-        issue_date.replace_year(issue_date.year() + 10).unwrap()
+        // CharlieCards issued before 2011 expire 7 years after they're issued
+        if issue_date < datetime!(2011-01-01 0:00 -5) {
+            return issue_date
+                .replace_year(issue_date.year() + 7)
+                .unwrap()
+                .date()
+                .previous_day()
+                .unwrap();
+        }
+
+        // CharlieCards expire one day before 10 years after their date of issue
+        issue_date
+            .replace_year(issue_date.year() + 10)
+            .unwrap()
+            .date()
+            .previous_day()
+            .unwrap()
     }
     fn transaction_history(&self) -> Vec<Transaction> {
         // CharlieCards keep a log of the last 10 transactions and their
