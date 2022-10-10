@@ -65,10 +65,11 @@ impl CharlieCard {
         Ok(CharlieCard {
             uid,
             serial_num,
+            card_type,
             num_uses: card_data.num_uses(),
             money_value: card_data.money_value(),
             transaction_history: card_data.transaction_history(),
-            expiration_date: card_data.expiration_date(),
+            expiration_date,
             card_data,
         })
     }
@@ -152,8 +153,8 @@ impl CharlieCard {
     }
 }
 
-#[derive(Debug, Serialize)]
-enum CharlieCardType {
+#[derive(Clone, Copy, Debug, Serialize)]
+pub enum CharlieCardType {
     Standard,
     Student,
 }
