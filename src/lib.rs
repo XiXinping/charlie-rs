@@ -22,6 +22,7 @@ static CHARLIE_EPOCH: OffsetDateTime = datetime!(2003-01-01 0:00 -5);
 pub struct CharlieCard {
     pub uid: [u8; 4],
     pub serial_num: u32,
+    pub card_type: CharlieCardType,
     pub money_value: u16,
     pub num_uses: u16,
     transaction_history: Vec<Transaction>,
@@ -43,9 +44,9 @@ impl CharlieCard {
             target_info.uid[3],
         ];
         // convert the four bytes into one number
-        let serial_num = (uid[0] as u32 * 16777216)
-            + (uid[1] as u32 * 65536)
-            + (uid[2] as u32 * 255)
+        let serial_num = (uid[0] as u32 * 0x1000000)
+            + (uid[1] as u32 * 0x10000)
+            + (uid[2] as u32 * 0x100)
             + uid[3] as u32;
 
         let mut card_data = MifareCard::new(target_card);
@@ -57,6 +58,9 @@ impl CharlieCard {
         for i in 6..8 {
             card_data.read_sector(device, i)?;
         }
+
+        let card_type = card_data.card_type();
+        let expiration_date = card_data.expiration_date(card_type);
 
         Ok(CharlieCard {
             uid,
@@ -74,18 +78,9 @@ impl CharlieCard {
         // finds the checksum xor value for the given money xor value
         let checksum_xor_value = checksums::MONEY_CHECKSUMS[money_xor_value as usize];
 
-        let block5 = self.card_data.sectors[1].unwrap().data_blocks[1];
-        let block6 = self.card_data.sectors[1].unwrap().data_blocks[2];
+        let active_sector = self.card_data.active_sector();
 
-        // the first two bytes of each block is the count variable
-        let block5_count = block5.data[0] as u16 * 256 + block5.data[1] as u16;
-        let block6_count = block6.data[0] as u16 * 256 + block6.data[1] as u16;
-
-        let current_money_sector: usize = if block5_count < block6_count { 2 } else { 3 };
-
-        let mut new_money_block = self.card_data.sectors[current_money_sector]
-            .unwrap()
-            .data_blocks[1];
+        let mut new_money_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
 
         let doubled_money_value = new_money_value << 1;
         // adjusting the money variable
@@ -97,20 +92,14 @@ impl CharlieCard {
         new_money_block.data[14] ^= (checksum_xor_value >> 8) as u8;
         new_money_block.data[15] ^= (checksum_xor_value % 256) as u8;
 
-        self.card_data.sectors[current_money_sector] = Some(Sector {
-            sector_num: current_money_sector as u8,
+        self.card_data.sectors[active_sector] = Some(Sector {
+            sector_num: active_sector as u8,
             data_blocks: [
-                self.card_data.sectors[current_money_sector]
-                    .unwrap()
-                    .data_blocks[0],
+                self.card_data.sectors[active_sector].unwrap().data_blocks[0],
                 new_money_block,
-                self.card_data.sectors[current_money_sector]
-                    .unwrap()
-                    .data_blocks[2],
+                self.card_data.sectors[active_sector].unwrap().data_blocks[2],
             ],
-            trailer_block: self.card_data.sectors[current_money_sector]
-                .unwrap()
-                .trailer_block,
+            trailer_block: self.card_data.sectors[active_sector].unwrap().trailer_block,
         });
 
         self.money_value = new_money_value;
@@ -133,6 +122,7 @@ impl CharlieCard {
     pub fn print_info(&self) {
         println!("\nCharlieCard Info:");
         println!("Serial Number: {}", self.serial_num);
+        println!("Card Type: {:?}", self.card_type);
         println!("Money Value: ${:.2}", self.money_value as f32 / 100.0);
         println!("Total Number of Transactions: {}", self.num_uses);
 
@@ -160,6 +150,12 @@ impl CharlieCard {
                 .unwrap()
         );
     }
+}
+
+#[derive(Debug, Serialize)]
+enum CharlieCardType {
+    Standard,
+    Student,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -219,6 +215,23 @@ impl MifareCard {
             return block6.data[0] as u16 * 256 + block6.data[1] as u16 - 1;
         }
     }
+
+    pub fn card_type(&self) -> CharlieCardType {
+        let active_sector = self.active_sector();
+        let block = self.sectors[active_sector].unwrap().data_blocks[1];
+        // the first byte in the second block of the active sector seems to
+        // determine what type of card a CharlieCard is
+        let card_type_byte = block.data[0];
+        // 104 seems to be the code for student cards
+        if card_type_byte == 104 {
+            return CharlieCardType::Student;
+        } else {
+            // 91 seems to correspond to standard cards, but just in case it
+            // reads something else, we'll just call it a standard card
+            return CharlieCardType::Standard;
+        }
+    }
+
     pub fn money_value(&self) -> u16 {
         let active_sector = self.active_sector();
         // the actual money values are stored on blocks 9 and 13
@@ -228,7 +241,7 @@ impl MifareCard {
         money_block.data[5] as u16 * 256 + money_block.data[6] as u16 >> 1
     }
 
-    pub fn expiration_date(&self) -> Date {
+    pub fn expiration_date(&self, card_type: CharlieCardType) -> Date {
         let active_sector = self.active_sector();
         let expiration_block = self.sectors[active_sector].unwrap().data_blocks[0];
         let raw_timestamp = (expiration_block.data[6] as u32 * 65536)
@@ -237,6 +250,15 @@ impl MifareCard {
 
         let issue_date = CHARLIE_EPOCH + Duration::seconds(raw_timestamp as i64 * 60);
 
+        // student cards last one school year and expire one year after issue
+        if let CharlieCardType::Student = card_type {
+            return issue_date
+                .replace_year(issue_date.year() + 1)
+                .unwrap()
+                .date()
+                .previous_day()
+                .unwrap();
+        }
         // CharlieCards issued before 2011 expire 7 years after they're issued
         if issue_date < datetime!(2011-01-01 0:00 -5) {
             return issue_date
