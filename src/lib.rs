@@ -14,9 +14,11 @@ use time::{
     macros::datetime, macros::format_description, serde::timestamp, Date, Duration, Month,
     OffsetDateTime, PrimitiveDateTime, Time,
 };
+use time_tz::{timezones::db::america::NEW_YORK, OffsetDateTimeExt, PrimitiveDateTimeExt};
 
 // the CharlieCard epoch begins on midnight on January 1st
-static CHARLIE_EPOCH: OffsetDateTime = datetime!(2003-01-01 0:00 -5);
+//static CHARLIE_EPOCH: OffsetDateTime = datetime!(2003-01-01 0:00 -5);
+static CHARLIE_EPOCH: PrimitiveDateTime = datetime!(2003-01-01 0:00);
 
 #[derive(Serialize)]
 pub struct CharlieCard {
@@ -171,7 +173,9 @@ impl Transaction {
         let raw_timestamp_seconds = Duration::seconds(raw_timestamp as i64 * 60);
 
         Transaction {
-            timestamp: CHARLIE_EPOCH + raw_timestamp_seconds,
+            timestamp: (CHARLIE_EPOCH + raw_timestamp_seconds)
+                .assume_timezone(NEW_YORK)
+                .unwrap(),
         }
     }
 }
@@ -257,7 +261,7 @@ impl MifareCard {
             return Date::from_calendar_date(issue_date.year() + 1, Month::August, 31).unwrap();
         }
         // CharlieCards issued before 2011 expire 7 years after they're issued
-        if issue_date < datetime!(2011-01-01 0:00 -5) {
+        if issue_date < datetime!(2011-01-01 0:00) {
             return issue_date
                 .replace_year(issue_date.year() + 7)
                 .unwrap()
