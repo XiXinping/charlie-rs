@@ -17,7 +17,6 @@ use time::{
 use time_tz::{timezones::db::america::NEW_YORK, OffsetDateTimeExt, PrimitiveDateTimeExt};
 
 // the CharlieCard epoch begins on midnight on January 1st
-//static CHARLIE_EPOCH: OffsetDateTime = datetime!(2003-01-01 0:00 -5);
 static CHARLIE_EPOCH: PrimitiveDateTime = datetime!(2003-01-01 0:00);
 
 #[derive(Serialize)]
