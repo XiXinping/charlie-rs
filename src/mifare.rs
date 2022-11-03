@@ -116,7 +116,7 @@ fn poll_card(reader: &mut NfcReader, timeout: u32) -> Result<Target> {
             }
         }
     } else {
-        for _ in 0..(timeout / 10) {
+        for _ in 0..((timeout as f32 / 10.0).ceil() as u32) {
             let target = reader.with_device_mut(|device| -> Result<Target> {
                 Ok(device.initiator_select_passive_target(&MIFARE_MODULATION)?)
             })?;
