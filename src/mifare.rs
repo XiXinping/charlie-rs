@@ -116,7 +116,7 @@ fn poll_card(reader: &mut NfcReader, timeout: u32) -> Result<Target> {
             }
         }
     } else {
-        for _ in 0..(timeout * 2) {
+        for _ in 0..(timeout / 10) {
             let target = reader.with_device_mut(|device| -> Result<Target> {
                 Ok(device.initiator_select_passive_target(&MIFARE_MODULATION)?)
             })?;
@@ -132,7 +132,7 @@ fn poll_card(reader: &mut NfcReader, timeout: u32) -> Result<Target> {
             {
                 return Ok(target);
             }
-            thread::sleep(Duration::from_millis(500));
+            thread::sleep(Duration::from_millis(10));
         }
         // if a card still hasn't been found
         Err(CardError::CardNotFound.into())
