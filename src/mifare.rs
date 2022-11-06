@@ -122,7 +122,6 @@ pub fn detect_card(reader: &mut NfcReader) -> Result<Option<Target>> {
         _ => return Err(CardError::ReaderError.into()),
     };
 
-    println!("Target found!");
     if target_info.atqa == [0, 0]
         || target_info.sak == 0
         || target_info.uid_len == 0
@@ -130,6 +129,7 @@ pub fn detect_card(reader: &mut NfcReader) -> Result<Option<Target>> {
     {
         return Ok(None);
     }
+    println!("Target found!");
 
     // make sure the card is a MIFARE card
     if target_info.sak != 0x08
