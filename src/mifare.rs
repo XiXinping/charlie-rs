@@ -102,10 +102,7 @@ pub fn wait_for_card(reader: &mut NfcReader, timeout: Duration) -> Result<Target
 
     while timer.elapsed() < timeout {
         match detect_card(reader)? {
-            Some(card) => {
-                println!("Card found!");
-                return Ok(card);
-            }
+            Some(card) => return Ok(card),
             None => (),
         };
     }
