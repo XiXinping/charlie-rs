@@ -124,9 +124,9 @@ pub fn detect_card(reader: &mut NfcReader) -> Result<Option<Target>> {
 
     dbg!(target_info);
     if target_info.atqa == [0, 0]
-        || target_info.sak == 0
-        || target_info.uid_len == 0
-        || target_info.ats_len == 0
+        && target_info.sak == 0
+        && target_info.uid_len == 0
+        && target_info.ats_len == 0
     {
         return Ok(None);
     }
