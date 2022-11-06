@@ -6,7 +6,7 @@ extern crate serde;
 mod checksums;
 mod mifare;
 use anyhow::Result;
-pub use mifare::{find_card, NfcReader};
+pub use mifare::{detect_card, wait_for_card, NfcReader};
 use mifare::{MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
 use serde::Serialize;

@@ -11,7 +11,7 @@ use serde::Serialize;
 use std::error::Error;
 use std::fmt::{self, Display, Formatter};
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 #[self_referencing]
 pub struct NfcReader<'a> {
@@ -77,6 +77,7 @@ pub struct MifareCard {
 
 #[derive(Debug)]
 pub enum CardError {
+    ReaderError,
     CardNotFound,
     NotCharlieCard,
 }
@@ -84,6 +85,7 @@ pub enum CardError {
 impl Display for CardError {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
+            CardError::ReaderError => write!(f, "Error while reading card!"),
             CardError::CardNotFound => write!(
                 f,
                 "Could not find CharlieCard! Make sure card is placed on reader!"
@@ -95,72 +97,48 @@ impl Display for CardError {
 
 impl Error for CardError {}
 
-fn poll_card(reader: &mut NfcReader, timeout: u32) -> Result<Target> {
-    if timeout == 0 {
-        loop {
-            let target = reader.with_device_mut(|device| -> Result<Target> {
-                Ok(device.initiator_select_passive_target(&MIFARE_MODULATION)?)
-            })?;
-            let target_info = match target.target_info {
-                TargetInfo::Iso14443a(info) => info,
-                _ => return Err(anyhow!("Error reading card!")),
-            };
-            // if the target is more than just a bunch of zeroes, it's probably an
-            // actual card
-            if !((target_info.atqa == [0, 0])
-                && (target_info.sak == 0)
-                && (target_info.uid_len == 0)
-                && (target_info.ats_len == 0))
-            {
-                return Ok(target);
-            }
-        }
-    } else {
-        for _ in 0..((timeout as f32 / 10.0).ceil() as u32) {
-            let target = reader.with_device_mut(|device| -> Result<Target> {
-                Ok(device.initiator_select_passive_target(&MIFARE_MODULATION)?)
-            })?;
-            let target_info = match target.target_info {
-                TargetInfo::Iso14443a(info) => info,
-                _ => return Err(anyhow!("Error reading card!")),
-            };
+pub fn wait_for_card(reader: &mut NfcReader, timeout: Duration) -> Result<Target> {
+    let timer = Instant::now();
 
-            if !((target_info.atqa == [0, 0])
-                && (target_info.sak == 0)
-                && (target_info.uid_len == 0)
-                && (target_info.ats_len == 0))
-            {
-                return Ok(target);
-            }
-            thread::sleep(Duration::from_millis(10));
-        }
-        // if a card still hasn't been found
-        Err(CardError::CardNotFound.into())
+    while timer.elapsed() < timeout {
+        match detect_card(reader)? {
+            Some(card) => return Ok(card),
+            None => (),
+        };
     }
+
+    Err(CardError::CardNotFound.into())
 }
 
-pub fn find_card(reader: &mut NfcReader, timeout: u32) -> Result<Target> {
-    let card = poll_card(reader, timeout)?;
-
-    let card_info = match card.target_info {
+pub fn detect_card(reader: &mut NfcReader) -> Result<Option<Target>> {
+    let target = reader.with_device_mut(|device| -> Result<Target, nfc::Error> {
+        Ok(device.initiator_select_passive_target(&MIFARE_MODULATION)?)
+    })?;
+    let target_info = match target.target_info {
         TargetInfo::Iso14443a(info) => info,
-        _ => {
-            return Err(CardError::NotCharlieCard.into());
-        }
+        _ => return Err(CardError::ReaderError.into()),
     };
+
+    if target_info.atqa == [0, 0]
+        || target_info.sak == 0
+        || target_info.uid_len == 0
+        || target_info.ats_len == 0
+    {
+        return Ok(None);
+    }
+
     // make sure the card is a MIFARE card
-    if card_info.sak != 0x08
+    if target_info.sak != 0x08
         // check to make sure the card doesn't have 4KB of memory (CharlieCards
         // only have 1KB)
-        || card_info.atqa[1] == 0x02
-        || card_info.sak == 0x18
+        || target_info.atqa[1] == 0x02
+        || target_info.sak == 0x18
         // cards with 320B of memory aren't CharlieCards either
-        || card_info.sak == 0x09
+        || target_info.sak == 0x09
     {
         return Err(CardError::NotCharlieCard.into());
     }
-
-    Ok(card)
+    return Ok(Some(target));
 }
 
 impl MifareCard {
@@ -211,7 +189,7 @@ impl MifareCard {
             uid[3],
         ];
         // make sure the card is still there
-        find_card(reader, 5)?;
+        wait_for_card(reader, Duration::from_secs(5))?;
 
         reader.with_device_mut(|device| -> Result<Vec<u8>> {
             device
