@@ -38,12 +38,7 @@ impl CharlieCard {
             _ => panic!(),
         };
 
-        let uid = [
-            target_info.uid[0],
-            target_info.uid[1],
-            target_info.uid[2],
-            target_info.uid[3],
-        ];
+        let uid = [target_info.uid[0], target_info.uid[1], target_info.uid[2], target_info.uid[3]];
         // convert the four bytes into one number
         let serial_num = (uid[0] as u32 * 0x1000000)
             + (uid[1] as u32 * 0x10000)
@@ -106,6 +101,10 @@ impl CharlieCard {
 
         self.money_value = new_money_value;
 
+        Ok(())
+    }
+
+    pub fn update_expiration_date(&mut self, new_date: Date) -> Result<()> {
         Ok(())
     }
 
