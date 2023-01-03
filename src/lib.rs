@@ -71,23 +71,33 @@ impl CharlieCard {
     }
 
     pub fn update_money(&mut self, new_money_value: u16) -> Result<()> {
-        let money_xor_value = self.money_value ^ new_money_value;
+        // find the value that XORs with the current money value to yield the new one
+        let money_xor = (self.money_value ^ new_money_value) << 1;
+        // the money value spans two bytes/columns, so the value for each byte/column must be
+        // isolated
+        let column_5_xor = (money_xor >> 8) as u8;
+        let column_6_xor = (money_xor & 0xFF) as u8;
         // finds the checksum xor value for the given money xor value
-        let checksum_xor_value = checksums::MONEY_CHECKSUMS[money_xor_value as usize];
+        let checksum_xor_value = checksums::MONEY_CHECKSUMS[money_xor as usize];
+
+        // find the checksum modifier for each byte of the money value and xor them together
+        let checksum_modifier = checksums::get_checksum_modifier(5, column_5_xor)
+            ^ checksums::get_checksum_modifier(6, column_6_xor);
+        println!("{}", checksum_xor_value);
+        println!("{}", checksum_modifier);
 
         let active_sector = self.card_data.active_sector();
 
         let mut new_money_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
 
-        let doubled_money_value = new_money_value << 1;
         // adjusting the money variable
         // representing a 16 bit integer as two 8-bit integers
-        new_money_block.data[5] = (doubled_money_value >> 8) as u8;
-        new_money_block.data[6] = (doubled_money_value % 256) as u8;
+        new_money_block.data[5] = (new_money_value * 2 >> 8) as u8;
+        new_money_block.data[6] = (new_money_value * 2 & 0xFF) as u8;
 
         // adjusting the checksum
-        new_money_block.data[14] ^= (checksum_xor_value >> 8) as u8;
-        new_money_block.data[15] ^= (checksum_xor_value % 256) as u8;
+        new_money_block.data[14] ^= (checksum_modifier >> 8) as u8;
+        new_money_block.data[15] ^= (checksum_modifier & 0xFF) as u8;
 
         self.card_data.sectors[active_sector] = Some(Sector {
             sector_num: active_sector as u8,
