@@ -26,7 +26,7 @@ pub struct CharlieCard {
     pub card_type: CharlieCardType,
     pub money_value: u16,
     pub num_uses: u16,
-    transaction_history: Vec<Transaction>,
+    pub transaction_history: Vec<Transaction>,
     pub expiration_date: Date,
     card_data: MifareCard,
 }
@@ -77,14 +77,10 @@ impl CharlieCard {
         // isolated
         let column_5_xor = (money_xor >> 8) as u8;
         let column_6_xor = (money_xor & 0xFF) as u8;
-        // finds the checksum xor value for the given money xor value
-        let checksum_xor_value = checksums::MONEY_CHECKSUMS[money_xor as usize];
 
         // find the checksum modifier for each byte of the money value and xor them together
         let checksum_modifier = checksums::get_checksum_modifier(5, column_5_xor)
             ^ checksums::get_checksum_modifier(6, column_6_xor);
-        println!("{}", checksum_xor_value);
-        println!("{}", checksum_modifier);
 
         let active_sector = self.card_data.active_sector();
 
