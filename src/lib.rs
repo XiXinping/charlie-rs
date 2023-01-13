@@ -110,7 +110,41 @@ impl CharlieCard {
         Ok(())
     }
 
-    pub fn update_expiration_date(&mut self, new_date: Date) -> Result<()> {
+    pub fn update_expiration_date(&mut self, new_date: PrimitiveDateTime) -> Result<()> {
+        let active_sector = self.card_data.active_sector();
+        let mut expiration_block = self.card_data.sectors[active_sector].unwrap().data_blocks[0];
+        let charlie_epoch_new_date = (new_date - CHARLIE_EPOCH).whole_minutes();
+
+        let new_date_byte1 = (charlie_epoch_new_date >> 16) as u8;
+        let new_date_byte2 = (charlie_epoch_new_date >> 8 & 0xFF) as u8;
+        let new_date_byte3 = (charlie_epoch_new_date & 0xFF) as u8;
+
+        let byte1_xor_product = new_date_byte1 ^ expiration_block.data[6];
+        let byte2_xor_product = new_date_byte2 ^ expiration_block.data[7];
+        let byte3_xor_product = new_date_byte3 ^ expiration_block.data[8];
+
+        let checksum_modifier = checksums::get_checksum_modifier(6, byte1_xor_product)
+            ^ checksums::get_checksum_modifier(7, byte2_xor_product)
+            ^ checksums::get_checksum_modifier(8, byte3_xor_product);
+
+        expiration_block.data[6] = new_date_byte1;
+        expiration_block.data[7] = new_date_byte2;
+        expiration_block.data[8] = new_date_byte3;
+
+        expiration_block.data[14] ^= (checksum_modifier >> 8) as u8;
+        expiration_block.data[15] ^= (checksum_modifier & 0xFF) as u8;
+
+        self.card_data.sectors[active_sector] = Some(Sector {
+            sector_num: active_sector as u8,
+            data_blocks: [
+                self.card_data.sectors[active_sector].unwrap().data_blocks[0],
+                expiration_block,
+                self.card_data.sectors[active_sector].unwrap().data_blocks[2],
+            ],
+            trailer_block: self.card_data.sectors[active_sector].unwrap().trailer_block,
+        });
+        self.expiration_date = new_date.date();
+
         Ok(())
     }
 
