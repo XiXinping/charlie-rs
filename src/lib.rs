@@ -112,37 +112,52 @@ impl CharlieCard {
 
     pub fn update_expiration_date(&mut self, new_date: PrimitiveDateTime) -> Result<()> {
         let active_sector = self.card_data.active_sector();
+        // block that contains the expiration date
         let mut expiration_block = self.card_data.sectors[active_sector].unwrap().data_blocks[0];
+        // represent the new date in the form of number of minutes since 1/1/2003
         let charlie_epoch_new_date = (new_date - CHARLIE_EPOCH).whole_minutes();
 
+        // represent the new date as three bytes
         let new_date_byte1 = (charlie_epoch_new_date >> 16) as u8;
         let new_date_byte2 = (charlie_epoch_new_date >> 8 & 0xFF) as u8;
         let new_date_byte3 = (charlie_epoch_new_date & 0xFF) as u8;
 
+        // XOR each byte of the old date with the new date to find to allow for calculating the
+        // checksum modifier
         let byte1_xor_product = new_date_byte1 ^ expiration_block.data[6];
         let byte2_xor_product = new_date_byte2 ^ expiration_block.data[7];
         let byte3_xor_product = new_date_byte3 ^ expiration_block.data[8];
 
+        // compute the checksum modifier by looking up the checksum modifier for each byte and
+        // XORing them together
         let checksum_modifier = checksums::get_checksum_modifier(6, byte1_xor_product)
             ^ checksums::get_checksum_modifier(7, byte2_xor_product)
             ^ checksums::get_checksum_modifier(8, byte3_xor_product);
 
+        // update the expiration date
         expiration_block.data[6] = new_date_byte1;
         expiration_block.data[7] = new_date_byte2;
         expiration_block.data[8] = new_date_byte3;
 
+        // update the checksum
         expiration_block.data[14] ^= (checksum_modifier >> 8) as u8;
         expiration_block.data[15] ^= (checksum_modifier & 0xFF) as u8;
 
-        self.card_data.sectors[active_sector] = Some(Sector {
-            sector_num: active_sector as u8,
-            data_blocks: [
-                self.card_data.sectors[active_sector].unwrap().data_blocks[0],
-                expiration_block,
-                self.card_data.sectors[active_sector].unwrap().data_blocks[2],
-            ],
-            trailer_block: self.card_data.sectors[active_sector].unwrap().trailer_block,
-        });
+        // update the card data
+        if let Some(mut sector) = self.card_data.sectors[active_sector] {
+            sector.data_blocks[1] = expiration_block;
+        }
+
+        //self.card_data.sectors[active_sector] = Some(Sector {
+        //sector_num: active_sector as u8,
+        //data_blocks: [
+        //self.card_data.sectors[active_sector].unwrap().data_blocks[0],
+        //expiration_block,
+        //self.card_data.sectors[active_sector].unwrap().data_blocks[2],
+        //],
+        //trailer_block: self.card_data.sectors[active_sector].unwrap().trailer_block,
+        //});
+
         self.expiration_date = new_date.date();
 
         Ok(())
@@ -165,6 +180,14 @@ impl CharlieCard {
         println!("Serial Number: {}", self.serial_num);
         println!("Card Type: {:?}", self.card_type);
         println!("Money Value: ${:.2}", self.money_value as f32 / 100.0);
+        println!(
+            "Expiration Date: {}\n",
+            self.expiration_date
+                .format(&format_description!(
+                    "[weekday], [month repr:long] [day], [year]"
+                ))
+                .unwrap()
+        );
         println!("Total Number of Transactions: {}", self.num_uses);
 
         if let Some(transaction) = self.last_transaction() {
@@ -182,14 +205,6 @@ impl CharlieCard {
             // if there aren't any transactions yet
             println!("Last Transaction: Never");
         };
-        println!(
-            "Expiration Date: {}\n",
-            self.expiration_date
-                .format(&format_description!(
-                    "[weekday], [month repr:long] [day], [year]"
-                ))
-                .unwrap()
-        );
     }
 }
 
