@@ -110,12 +110,12 @@ impl CharlieCard {
         Ok(())
     }
 
-    pub fn update_expiration_date(&mut self, new_date: PrimitiveDateTime) -> Result<()> {
+    pub fn update_expiration(&mut self, new_date: Date) -> Result<()> {
         let active_sector = self.card_data.active_sector();
         // block that contains the expiration date
         let mut expiration_block = self.card_data.sectors[active_sector].unwrap().data_blocks[0];
         // represent the new date in the form of number of minutes since 1/1/2003
-        let charlie_epoch_new_date = (new_date - CHARLIE_EPOCH).whole_minutes();
+        let charlie_epoch_new_date = (new_date.midnight() - CHARLIE_EPOCH).whole_minutes();
 
         // represent the new date as three bytes
         let new_date_byte1 = (charlie_epoch_new_date >> 16) as u8;
