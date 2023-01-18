@@ -144,7 +144,7 @@ impl CharlieCard {
         expiration_block.data[15] ^= (checksum_modifier & 0xFF) as u8;
 
         // update the card data
-        if let Some(ref mut sector) = self.card_data.sectors[active_sector] {
+        if let Some(sector) = self.card_data.sectors[active_sector].as_mut() {
             sector.data_blocks[1] = expiration_block;
         }
 
