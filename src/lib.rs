@@ -116,8 +116,11 @@ impl CharlieCard {
         let mut expiration_block = self.card_data.sectors[active_sector].unwrap().data_blocks[0];
 
         // the expiration date is actually not recorded on the card, rather the card only stores
-        // the date of issue and adds 10 years
-        let new_issue_date = new_date.replace_year(new_date.year() - 10)?;
+        // the date of issue and adds 10 years minus 1 day
+        let new_issue_date = new_date
+            .replace_year(new_date.year() - 10)?
+            .next_day()
+            .unwrap();
         // represent the new date in the form of number of minutes since 1/1/2003
         let new_timestamp = (new_issue_date.midnight() - CHARLIE_EPOCH).whole_minutes();
 
