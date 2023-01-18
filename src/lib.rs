@@ -145,7 +145,7 @@ impl CharlieCard {
 
         // update the card data
         if let Some(ref mut sector) = self.card_data.sectors[active_sector] {
-            sector.data_blocks[1] = expiration_block;
+            sector.data_blocks[0] = expiration_block;
         }
 
         //self.card_data.sectors[active_sector] = Some(Sector {
