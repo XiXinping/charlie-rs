@@ -158,7 +158,7 @@ impl CharlieCard {
         //trailer_block: self.card_data.sectors[active_sector].unwrap().trailer_block,
         //});
 
-        self.expiration_date = new_date.date();
+        self.expiration_date = new_date;
 
         Ok(())
     }
