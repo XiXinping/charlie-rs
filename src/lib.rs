@@ -114,19 +114,23 @@ impl CharlieCard {
         let active_sector = self.card_data.active_sector();
         // block that contains the expiration date
         let mut expiration_block = self.card_data.sectors[active_sector].unwrap().data_blocks[0];
+
+        // the expiration date is actually not recorded on the card, rather the card only stores
+        // the date of issue and adds 10 years
+        let new_issue_date = new_date.replace_year(new_date.year() - 10)?;
         // represent the new date in the form of number of minutes since 1/1/2003
-        let charlie_epoch_new_date = (new_date.midnight() - CHARLIE_EPOCH).whole_minutes();
+        let new_timestamp = (new_issue_date.midnight() - CHARLIE_EPOCH).whole_minutes();
 
         // represent the new date as three bytes
-        let new_date_byte1 = (charlie_epoch_new_date >> 16) as u8;
-        let new_date_byte2 = (charlie_epoch_new_date >> 8 & 0xFF) as u8;
-        let new_date_byte3 = (charlie_epoch_new_date & 0xFF) as u8;
+        let new_timestamp_byte1 = (new_timestamp >> 16) as u8;
+        let new_timestamp_byte2 = (new_timestamp >> 8 & 0xFF) as u8;
+        let new_timestamp_byte3 = (new_timestamp & 0xFF) as u8;
 
         // XOR each byte of the old date with the new date to find to allow for calculating the
         // checksum modifier
-        let byte1_xor_product = new_date_byte1 ^ expiration_block.data[6];
-        let byte2_xor_product = new_date_byte2 ^ expiration_block.data[7];
-        let byte3_xor_product = new_date_byte3 ^ expiration_block.data[8];
+        let byte1_xor_product = new_timestamp_byte1 ^ expiration_block.data[6];
+        let byte2_xor_product = new_timestamp_byte2 ^ expiration_block.data[7];
+        let byte3_xor_product = new_timestamp_byte3 ^ expiration_block.data[8];
 
         // compute the checksum modifier by looking up the checksum modifier for each byte and
         // XORing them together
@@ -135,9 +139,9 @@ impl CharlieCard {
             ^ checksums::get_checksum_modifier(8, byte3_xor_product);
 
         // update the expiration date
-        expiration_block.data[6] = new_date_byte1;
-        expiration_block.data[7] = new_date_byte2;
-        expiration_block.data[8] = new_date_byte3;
+        expiration_block.data[6] = new_timestamp_byte1;
+        expiration_block.data[7] = new_timestamp_byte2;
+        expiration_block.data[8] = new_timestamp_byte3;
 
         // update the checksum
         expiration_block.data[14] ^= (checksum_modifier >> 8) as u8;
@@ -148,22 +152,13 @@ impl CharlieCard {
             sector.data_blocks[0] = expiration_block;
         }
 
-        //self.card_data.sectors[active_sector] = Some(Sector {
-        //sector_num: active_sector as u8,
-        //data_blocks: [
-        //self.card_data.sectors[active_sector].unwrap().data_blocks[0],
-        //expiration_block,
-        //self.card_data.sectors[active_sector].unwrap().data_blocks[2],
-        //],
-        //trailer_block: self.card_data.sectors[active_sector].unwrap().trailer_block,
-        //});
-
         self.expiration_date = new_date;
 
         Ok(())
     }
 
     pub fn write_card(&self, reader: &mut NfcReader) -> Result<()> {
+        // write each sector to the card
         for sector in self.card_data.sectors.into_iter().flatten() {
             self.card_data.write_sector(reader, sector.sector_num)?;
         }
