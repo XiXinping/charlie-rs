@@ -7,7 +7,7 @@ mod checksums;
 mod mifare;
 use anyhow::{bail, Result};
 pub use mifare::{detect_card, wait_for_card, NfcReader};
-use mifare::{MifareCard, Sector};
+use mifare::{CardError, MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
 use serde::Serialize;
 use time::{
@@ -19,7 +19,7 @@ use time_tz::{timezones::db::america::NEW_YORK, OffsetDateTimeExt, PrimitiveDate
 // the CharlieCard epoch begins on midnight on January 1st
 static CHARLIE_EPOCH: PrimitiveDateTime = datetime!(2003-01-01 0:00);
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone, Eq, PartialEq)]
 pub struct CharlieCard {
     pub uid: [u8; 4],
     pub serial_num: u32,
@@ -35,7 +35,7 @@ impl CharlieCard {
     pub fn new(mut device: &mut NfcReader, target_card: Target) -> Result<CharlieCard> {
         let target_info = match target_card.target_info {
             TargetInfo::Iso14443a(info) => info,
-            _ => panic!(),
+            _ => return Err(CardError::NotCharlieCard.into()),
         };
 
         let uid = [target_info.uid[0], target_info.uid[1], target_info.uid[2], target_info.uid[3]];
@@ -45,7 +45,7 @@ impl CharlieCard {
             + (uid[2] as u32 * 0x100)
             + uid[3] as u32;
 
-        let mut card_data = MifareCard::new(target_card);
+        let mut card_data = MifareCard::new(target_card)?;
 
         // read the sectors that contain important information
         for i in 1..4 {
@@ -173,6 +173,14 @@ impl CharlieCard {
         Ok(())
     }
 
+    // read the card again and check to make sure it matches the current card in memory
+    pub fn verify_write(&self, reader: &mut NfcReader) -> Result<bool> {
+        let target = detect_card(reader)?.ok_or(CardError::CardNotFound)?;
+        let mut card = CharlieCard::new(reader, target)?;
+        
+        Ok(self == &card)
+    }
+
     pub fn last_transaction(&self) -> Option<Transaction> {
         self.transaction_history.get(0).cloned()
     }
@@ -210,13 +218,15 @@ impl CharlieCard {
     }
 }
 
-#[derive(Clone, Copy, Debug, Serialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 pub enum CharlieCardType {
+    Senior,
     Standard,
     Student,
+    Child,
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 pub struct Transaction {
     #[serde(with = "timestamp")]
     pub timestamp: OffsetDateTime,
@@ -347,6 +357,7 @@ impl MifareCard {
         // January 1st, 2003
         (CHARLIE_EPOCH + Duration::minutes(raw_timestamp * 8)).date()
     }
+
     fn transaction_history(&self) -> Vec<Transaction> {
         // CharlieCards keep a log of the last 10 transactions and their
         // timestamps the timestamps record the number of minutes between

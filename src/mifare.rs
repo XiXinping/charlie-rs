@@ -40,7 +40,7 @@ impl<'a> NfcReader<'a> {
         Ok(reader)
     }
 }
-#[derive(Clone, Copy, Debug, Serialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 pub struct ManufacturerBlock {
     uid: [u8; 4],
     bcc: u8,
@@ -49,29 +49,28 @@ pub struct ManufacturerBlock {
     data: [u8; 8],
 }
 
-#[derive(Clone, Copy, Debug, Serialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 pub struct DataBlock {
     pub data: [u8; 16],
 }
 
-#[derive(Clone, Copy, Debug, Serialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 pub struct TrailerBlock {
     key_a: [u8; 6],
     access_bits: [u8; 3],
     key_b: [u8; 6],
 }
 
-#[derive(Clone, Copy, Debug, Serialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 pub struct Sector {
     pub sector_num: u8,
     pub data_blocks: [DataBlock; 3],
     pub trailer_block: TrailerBlock,
 }
 
-#[derive(Serialize)]
+#[derive(Clone, Copy, Eq, PartialEq, Serialize)]
 pub struct MifareCard {
-    #[serde(skip_serializing)]
-    target: Target,
+    uid: [u8; 4],
     pub sectors: [Option<Sector>; 16],
 }
 
@@ -138,11 +137,16 @@ pub fn detect_card(reader: &mut NfcReader) -> Result<Option<Target>> {
 }
 
 impl MifareCard {
-    pub fn new(target: Target) -> MifareCard {
-        MifareCard {
-            target,
+    pub fn new(target: Target) -> Result<MifareCard> {
+        let uid = match target.target_info {
+            TargetInfo::Iso14443a(info) => [info.uid[0], info.uid[1], info.uid[2], info.uid[3]],
+            _ => return Err(CardError::NotCharlieCard.into()),
+        };
+
+        Ok(MifareCard {
+            uid,
             sectors: [None; 16],
-        }
+        })
     }
     pub fn authenticate(
         &self,
@@ -162,13 +166,6 @@ impl MifareCard {
         };
         let block_address = (sector_num + 1) * 4 - 1;
 
-        let target_info = match self.target.target_info {
-            TargetInfo::Iso14443a(info) => info,
-            _ => return Err(anyhow!("Error reading card data!")),
-        };
-
-        let uid = target_info.uid;
-
         // command structure: (Mifare command, block address, key, uid)
         let command = [
             mifare_command,
@@ -179,10 +176,10 @@ impl MifareCard {
             key[3],
             key[4],
             key[5],
-            uid[0],
-            uid[1],
-            uid[2],
-            uid[3],
+            self.uid[0],
+            self.uid[1],
+            self.uid[2],
+            self.uid[3],
         ];
         // make sure the card is still there
         wait_for_card(reader, Duration::from_secs(5))?;
