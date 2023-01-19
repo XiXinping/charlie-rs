@@ -174,11 +174,15 @@ impl CharlieCard {
     }
 
     // read the card again and check to make sure it matches the current card in memory
-    pub fn verify_write(&self, reader: &mut NfcReader) -> Result<bool> {
+    pub fn verify_write(&self, reader: &mut NfcReader) -> Result<()> {
         let target = detect_card(reader)?.ok_or(CardError::CardNotFound)?;
         let mut card = CharlieCard::new(reader, target)?;
         
-        Ok(self == &card)
+        if self == &card {
+            return Ok(());
+        } else {
+            return Err(CardError::WriteError.into());
+        }
     }
 
     pub fn last_transaction(&self) -> Option<Transaction> {

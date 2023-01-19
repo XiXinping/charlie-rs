@@ -1,6 +1,7 @@
 #![allow(unused)]
 extern crate anyhow;
 extern crate nfc1 as nfc;
+extern crate thiserror;
 use anyhow::{anyhow, Context, Result};
 use nfc::{
     target_info::TargetInfo, BaudRate, Device, Modulation, ModulationType, Property, Target,
@@ -74,27 +75,17 @@ pub struct MifareCard {
     pub sectors: [Option<Sector>; 16],
 }
 
-#[derive(Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum CardError {
+    #[error("Error while reading card!")]
     ReaderError,
+    #[error("Could not find CharlieCard! Make sure card is placed on reader!")]
     CardNotFound,
+    #[error("Card is not a CharlieCard!")]
     NotCharlieCard,
+    #[error("Error while writing to CharlieCard!")]
+    WriteError,
 }
-
-impl Display for CardError {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        match self {
-            CardError::ReaderError => write!(f, "Error while reading card!"),
-            CardError::CardNotFound => write!(
-                f,
-                "Could not find CharlieCard! Make sure card is placed on reader!"
-            ),
-            CardError::NotCharlieCard => write!(f, "Card is not a CharlieCard!"),
-        }
-    }
-}
-
-impl Error for CardError {}
 
 pub fn wait_for_card(reader: &mut NfcReader, timeout: Duration) -> Result<Target> {
     let timer = Instant::now();
