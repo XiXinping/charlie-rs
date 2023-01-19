@@ -333,6 +333,20 @@ impl MifareCard {
             .previous_day()
             .unwrap()
     }
+
+    pub fn end_validity_date(&self) -> Date {
+        let active_sector = self.active_sector();
+        let end_validity_block = self.sectors[active_sector].unwrap().data_blocks[1];
+        // the end validity timestamp shares byte 1 with another variable, occupying only 3 bits
+        // of byte 1 plus two other bytes, requiring a bitmask to calculate correctly
+        let raw_timestamp = (end_validity_block.data[1] as i64 * 65536)
+            + (end_validity_block.data[2] as i64 * 256)
+            + (end_validity_block.data[3] as i64)
+            & 0x1F_FF_FF;
+        // the end validity date is the number of 8 minute increments (cause why not?) since
+        // January 1st, 2003
+        (CHARLIE_EPOCH + Duration::minutes(raw_timestamp * 8)).date()
+    }
     fn transaction_history(&self) -> Vec<Transaction> {
         // CharlieCards keep a log of the last 10 transactions and their
         // timestamps the timestamps record the number of minutes between
