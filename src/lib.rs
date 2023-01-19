@@ -5,7 +5,7 @@ extern crate nfc1 as nfc;
 extern crate serde;
 mod checksums;
 mod mifare;
-use anyhow::Result;
+use anyhow::{bail, Result};
 pub use mifare::{detect_card, wait_for_card, NfcReader};
 use mifare::{MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
@@ -123,6 +123,10 @@ impl CharlieCard {
             .unwrap();
         // represent the new date in the form of number of minutes since 1/1/2003
         let new_timestamp = (new_issue_date.midnight() - CHARLIE_EPOCH).whole_minutes();
+
+        if new_timestamp > 0xFF_FF_FF || new_timestamp < 0 {
+            bail!("Expiration date out of range!");
+        }
 
         // represent the new date as three bytes
         let new_timestamp_byte1 = (new_timestamp >> 16) as u8;
