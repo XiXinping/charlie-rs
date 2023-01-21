@@ -293,11 +293,11 @@ impl MifareCard {
     pub fn card_type(&self) -> CharlieCardType {
         let active_sector = self.active_sector();
         let block = self.sectors[active_sector].unwrap().data_blocks[1];
-        // the first byte in the second block of the active sector seems to
+        // the first 10 bits in the second block of the active sector seems to
         // determine what type of card a CharlieCard is
-        let card_type_byte = block.data[0];
+        let card_type_number = ((block.data[0] as u16) << 2) + (block.data[1] as u16 >> 6);
         // 104 seems to be the code for student cards
-        if card_type_byte == 104 {
+        if card_type_number == 104 {
             return CharlieCardType::Student;
         } else {
             // 91 seems to correspond to standard cards, but just in case it
