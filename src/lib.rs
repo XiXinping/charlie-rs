@@ -164,6 +164,37 @@ impl CharlieCard {
         Ok(())
     }
 
+    pub fn update_card_type(&mut self, card_type_num: u16) -> Result<()> {
+        let active_sector = self.card_data.active_sector();
+        let mut card_type_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
+
+        let new_card_type_byte1 = card_type_num as u8 >> 2;
+        let card_type_byte1 = card_type_block.data[0];
+        let byte1_xor_product = new_card_type_byte1 ^ card_type_byte1;
+
+        let new_card_type_bits = card_type_num as u8 & 0b11;
+        let byte2 = card_type_block.data[1];
+        let new_byte2 = byte2 | new_card_type_bits << 6;
+        let byte2_xor_product = byte2 ^ new_byte2;
+
+        let checksum_modifier = checksums::get_checksum_modifier(0, byte1_xor_product)
+            ^ checksums::get_checksum_modifier(1, byte2_xor_product);
+        
+        // update the card type
+        card_type_block.data[0] = new_card_type_byte1;
+        card_type_block.data[1] = new_byte2;
+
+        // update the checksum
+        card_type_block.data[14] ^= (checksum_modifier >> 8) as u8;
+        card_type_block.data[15] ^= (checksum_modifier & 0xFF) as u8;
+
+        // update the card data
+        if let Some(ref mut sector) = self.card_data.sectors[active_sector] {
+            sector.data_blocks[1] = card_type_block;
+        }
+        Ok(())
+    }
+
     pub fn write_card(&self, reader: &mut NfcReader) -> Result<()> {
         // write each sector to the card
         for sector in self.card_data.sectors.into_iter().flatten() {
