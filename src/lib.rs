@@ -168,14 +168,13 @@ impl CharlieCard {
         let active_sector = self.card_data.active_sector();
         let mut card_type_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
 
-        println!("{:x}", card_type_num >> 2);
-        let new_card_type_byte1 = card_type_num as u8 >> 2;
+        let new_card_type_byte1 = (card_type_num >> 2) as u8;
         let card_type_byte1 = card_type_block.data[0];
         let byte1_xor_product = new_card_type_byte1 ^ card_type_byte1;
 
-        let new_card_type_bits = card_type_num as u8 & 0b11;
+        let new_card_type_bits = (card_type_num & 0b11) as u8;
         let byte2 = card_type_block.data[1];
-        let new_byte2 = byte2 | new_card_type_bits << 6;
+        let new_byte2 = byte2 | (new_card_type_bits << 6);
         let byte2_xor_product = byte2 ^ new_byte2;
 
         let checksum_modifier = checksums::get_checksum_modifier(0, byte1_xor_product)
