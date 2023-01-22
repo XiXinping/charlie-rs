@@ -181,6 +181,8 @@ impl CharlieCard {
             ^ checksums::get_checksum_modifier(1, byte2_xor_product);
         
         // update the card type
+        println!("{:x}", new_card_type_byte1);
+        println!("{:x}", new_byte2);
         card_type_block.data[0] = new_card_type_byte1;
         card_type_block.data[1] = new_byte2;
 
