@@ -175,7 +175,7 @@ impl CharlieCard {
         let new_card_type_bits = (card_type_num & 0b11) as u8;
         println!("{:b}", new_card_type_bits);
         let byte2 = card_type_block.data[1];
-        let new_byte2 = byte2 | (new_card_type_bits << 6);
+        let new_byte2 = (byte2 & 0b00_111111) | (new_card_type_bits << 6);
         let byte2_xor_product = byte2 ^ new_byte2;
 
         let checksum_modifier = checksums::get_checksum_modifier(0, byte1_xor_product)
