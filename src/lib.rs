@@ -168,6 +168,7 @@ impl CharlieCard {
         let active_sector = self.card_data.active_sector();
         let mut card_type_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
 
+        println!("{:x}", card_type_num >> 2);
         let new_card_type_byte1 = card_type_num as u8 >> 2;
         let card_type_byte1 = card_type_block.data[0];
         let byte1_xor_product = new_card_type_byte1 ^ card_type_byte1;
