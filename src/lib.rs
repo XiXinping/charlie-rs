@@ -3,9 +3,11 @@
 extern crate anyhow;
 extern crate nfc1 as nfc;
 extern crate serde;
+mod card_types;
 mod checksums;
 mod mifare;
 use anyhow::{bail, Result};
+use card_types::CardType;
 pub use mifare::{detect_card, wait_for_card, NfcReader};
 use mifare::{CardError, MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
@@ -23,7 +25,7 @@ static CHARLIE_EPOCH: PrimitiveDateTime = datetime!(2003-01-01 0:00);
 pub struct CharlieCard {
     pub uid: [u8; 4],
     pub serial_num: u32,
-    pub card_type: CharlieCardType,
+    pub card_type: CardType,
     pub money_value: u16,
     pub num_uses: u16,
     pub transaction_history: Vec<Transaction>,
@@ -254,14 +256,6 @@ impl CharlieCard {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
-pub enum CharlieCardType {
-    Senior,
-    Standard,
-    Student,
-    Child,
-}
-
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 pub struct Transaction {
     #[serde(with = "timestamp")]
     pub timestamp: OffsetDateTime,
@@ -321,19 +315,15 @@ impl MifareCard {
         }
     }
 
-    pub fn card_type(&self) -> CharlieCardType {
+    pub fn card_type(&self) -> CardType {
         let active_sector = self.active_sector();
         let block = self.sectors[active_sector].unwrap().data_blocks[1];
         // the first 10 bits in the second block of the active sector seems to
         // determine what type of card a CharlieCard is
-        let card_type_number = ((block.data[0] as u16) << 2) + (block.data[1] as u16 >> 6);
-        // 104 seems to be the code for student cards
-        if card_type_number == 104 {
-            return CharlieCardType::Student;
-        } else {
-            // 91 seems to correspond to standard cards, but just in case it
-            // reads something else, we'll just call it a standard card
-            return CharlieCardType::Standard;
+        let card_type_number = ((block.data[0] as usize) << 2) + (block.data[1] as usize >> 6);
+        match CardType::from_repr(card_type_number) {
+            Some(card_type) => card_type,
+            None => CardType::Nothing,
         }
     }
 
