@@ -7,7 +7,7 @@ mod card_types;
 mod checksums;
 mod mifare;
 use anyhow::{bail, Result};
-use card_types::CardType;
+use card_types::{CardType, PassType};
 pub use mifare::{detect_card, wait_for_card, NfcReader};
 use mifare::{CardError, MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
@@ -26,6 +26,7 @@ pub struct CharlieCard {
     pub uid: [u8; 4],
     pub serial_num: u32,
     pub card_type: CardType,
+    pub passes: [PassType; 2],
     pub money_value: u16,
     pub num_uses: u16,
     pub transaction_history: Vec<Transaction>,
@@ -64,6 +65,7 @@ impl CharlieCard {
             uid,
             serial_num,
             card_type,
+            passes: [PassType::Nothing, PassType::Nothing],
             num_uses: card_data.num_uses(),
             money_value: card_data.money_value(),
             transaction_history: card_data.transaction_history(),
@@ -336,7 +338,7 @@ impl MifareCard {
         money_block.data[5] as u16 * 256 + money_block.data[6] as u16 >> 1
     }
 
-    pub fn expiration_date(&self, card_type: CharlieCardType) -> Date {
+    pub fn expiration_date(&self, card_type: CardType) -> Date {
         let active_sector = self.active_sector();
         let expiration_block = self.sectors[active_sector].unwrap().data_blocks[0];
         let raw_timestamp = (expiration_block.data[6] as u32 * 65536)
@@ -347,7 +349,7 @@ impl MifareCard {
 
         // student cards last one school year and expire at the end of August
         // the next year
-        if let CharlieCardType::Student = card_type {
+        if let CardType::Student = card_type {
             return Date::from_calendar_date(issue_date.year() + 1, Month::August, 31).unwrap();
         }
         // CharlieCards issued before 2011 expire 7 years after they're issued
