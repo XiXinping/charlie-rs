@@ -168,6 +168,29 @@ impl CharlieCard {
         Ok(())
     }
 
+    fn update_end_validity(&mut self, new_end_validity: Date) {
+        let active_sector = self.card_data.active_sector();
+        let mut end_validity_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
+
+        // unlike the expiration date, the end validity timestamp stores the actual end validity
+        // rather than the date of issue, and stores the number of 8 minute increments since
+        // January 1, 2003, presumably to save space
+        let new_timestamp = (new_end_validity.midnight() - CHARLIE_EPOCH).whole_minutes() / 8;
+
+        let new_timestamp_byte1 = (new_timestamp >> 16 & 0x1F) as u8;
+        let new_timestamp_byte2 = (new_timestamp >> 8 & 0xFF) as u8;
+        let new_timestamp_byte3 = (new_timestamp & 0xFF) as u8;
+
+        // the first three bits need to be preserved, as they're shared with the card type byte
+        let byte1_xor_product = (end_validity_block.data[1] & 0x1F) | new_timestamp_byte1;
+        let byte2_xor_product = new_timestamp_byte2 ^ end_validity_block.data[2];
+        let byte3_xor_product = new_timestamp_byte3 ^ end_validity_block.data[3];
+
+        let checksum_modifier = checksums::get_checksum_modifier(1, byte2_xor_product)
+            ^ checksums::get_checksum_modifier(2, byte3_xor_product)
+            ^ checksums::get_checksum_modifier(2, byte3_xor_product);
+    }
+
     pub fn update_card_type(&mut self, card_type: CardType) -> Result<()> {
         let active_sector = self.card_data.active_sector();
         let mut card_type_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
