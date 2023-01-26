@@ -168,15 +168,15 @@ impl CharlieCard {
         Ok(())
     }
 
-    pub fn update_card_type(&mut self, card_type_num: u16) -> Result<()> {
+    pub fn update_card_type(&mut self, card_type: CardType) -> Result<()> {
         let active_sector = self.card_data.active_sector();
         let mut card_type_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
 
-        let new_card_type_byte1 = (card_type_num >> 2) as u8;
+        let new_card_type_byte1 = (card_type as usize >> 2) as u8;
         let card_type_byte1 = card_type_block.data[0];
         let byte1_xor_product = new_card_type_byte1 ^ card_type_byte1;
 
-        let new_card_type_bits = (card_type_num & 0b11) as u8;
+        let new_card_type_bits = (card_type as usize & 0b11) as u8;
         let byte2 = card_type_block.data[1];
         let new_byte2 = (byte2 & 0b00_111111) | (new_card_type_bits << 6);
         let byte2_xor_product = byte2 ^ new_byte2;
