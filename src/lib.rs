@@ -26,10 +26,11 @@ pub struct CharlieCard {
     pub uid: [u8; 4],
     pub serial_num: u32,
     pub card_type: CardType,
-    pub passes: [PassType; 2],
+    pub pass: Option<PassType>,
     pub money_value: u16,
     pub num_uses: u16,
     pub transaction_history: Vec<Transaction>,
+    pub end_validity: Date,
     pub expiration_date: Date,
     card_data: MifareCard,
 }
@@ -60,15 +61,17 @@ impl CharlieCard {
 
         let card_type = card_data.card_type();
         let expiration_date = card_data.expiration_date(card_type);
+        let end_validity = card_data.end_validity_date();
 
         Ok(CharlieCard {
             uid,
             serial_num,
             card_type,
-            passes: [PassType::Nothing, PassType::Nothing],
+            pass: None,
             num_uses: card_data.num_uses(),
             money_value: card_data.money_value(),
             transaction_history: card_data.transaction_history(),
+            end_validity,
             expiration_date,
             card_data,
         })
@@ -120,9 +123,10 @@ impl CharlieCard {
         let mut expiration_block = self.card_data.sectors[active_sector].unwrap().data_blocks[0];
 
         // the expiration date is actually not recorded on the card, rather the card only stores
-        // the date of issue and adds 10 years minus 1 day
+        // the date of issue and adds 10 years minus 1 day if it's a non-student card, and 1 year
+        // minues 1 day if it's a student card
         let new_issue_date = new_date
-            .replace_year(new_date.year() - 10)?
+            .replace_year(new_date.year() - if self.card_type == CardType::Student {1} else {10})?
             .next_day()
             .unwrap();
         // represent the new date in the form of number of minutes since 1/1/2003
@@ -168,7 +172,7 @@ impl CharlieCard {
         Ok(())
     }
 
-    fn update_end_validity(&mut self, new_end_validity: Date) {
+    fn update_end_validity(&mut self, new_end_validity: Date) -> Result<()> {
         let active_sector = self.card_data.active_sector();
         let mut end_validity_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
 
@@ -177,18 +181,37 @@ impl CharlieCard {
         // January 1, 2003, presumably to save space
         let new_timestamp = (new_end_validity.midnight() - CHARLIE_EPOCH).whole_minutes() / 8;
 
+        if new_timestamp > 0xFF_FF_FF || new_timestamp < 0 {
+            bail!("End validity out of range!");
+        }
+
         let new_timestamp_byte1 = (new_timestamp >> 16 & 0x1F) as u8;
         let new_timestamp_byte2 = (new_timestamp >> 8 & 0xFF) as u8;
         let new_timestamp_byte3 = (new_timestamp & 0xFF) as u8;
 
         // the first three bits need to be preserved, as they're shared with the card type byte
-        let byte1_xor_product = (end_validity_block.data[1] & 0x1F) | new_timestamp_byte1;
+        let byte1_xor_product = new_timestamp_byte1 ^ end_validity_block.data[1] & 0x1F;
         let byte2_xor_product = new_timestamp_byte2 ^ end_validity_block.data[2];
         let byte3_xor_product = new_timestamp_byte3 ^ end_validity_block.data[3];
 
-        let checksum_modifier = checksums::get_checksum_modifier(1, byte2_xor_product)
-            ^ checksums::get_checksum_modifier(2, byte3_xor_product)
-            ^ checksums::get_checksum_modifier(2, byte3_xor_product);
+        let checksum_modifier = checksums::get_checksum_modifier(1, byte1_xor_product)
+            ^ checksums::get_checksum_modifier(2, byte2_xor_product)
+            ^ checksums::get_checksum_modifier(3, byte3_xor_product);
+
+        // preserve the first three bits
+        end_validity_block.data[1] = end_validity_block.data[1] & 0xE0 | new_timestamp_byte1;
+        end_validity_block.data[2] = new_timestamp_byte2;
+        end_validity_block.data[3] = new_timestamp_byte3;
+
+        end_validity_block.data[14] ^= (checksum_modifier >> 8) as u8;
+        end_validity_block.data[15] ^= (checksum_modifier & 0xFF) as u8;
+
+        if let Some(ref mut sector) = self.card_data.sectors[active_sector] {
+            sector.data_blocks[1] = end_validity_block;
+        }
+        self.end_validity = new_end_validity;
+
+        Ok(())
     }
 
     pub fn update_card_type(&mut self, card_type: CardType) -> Result<()> {

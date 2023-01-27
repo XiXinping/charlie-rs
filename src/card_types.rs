@@ -1,4 +1,5 @@
 use serde::Serialize;
+use time::Date;
 use strum_macros::{Display, FromRepr};
 
 #[derive(Clone, Copy, Debug, Eq, FromRepr, PartialEq, Serialize)]
@@ -16,6 +17,12 @@ pub enum CardType {
     Employee = 414,
     Retiree = 415,
     PoliceFire = 416,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+pub struct Pass {
+    start_validity: Date,
+    pass_type: PassType,
 }
 
 #[derive(Clone, Copy, Debug, Display, Eq, FromRepr, PartialEq, Serialize)]
