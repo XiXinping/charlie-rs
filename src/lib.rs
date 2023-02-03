@@ -7,7 +7,7 @@ mod card_types;
 mod checksums;
 mod mifare;
 use anyhow::{bail, Result};
-use card_types::{CardType, PassType};
+pub use card_types::{CardType, PassType};
 pub use mifare::{detect_card, wait_for_card, NfcReader};
 use mifare::{CardError, MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
