@@ -363,15 +363,15 @@ impl MifareCard {
         }
     }
 
-    pub fn card_type(&self) -> CardType {
+    pub fn card_type(&self) -> TicketType {
         let active_sector = self.active_sector();
         let block = self.sectors[active_sector].unwrap().data_blocks[1];
         // the first 10 bits in the second block of the active sector seems to
         // determine what type of card a CharlieCard is
         let card_type_number = ((block.data[0] as usize) << 2) + (block.data[1] as usize >> 6);
-        match CardType::from_repr(card_type_number) {
+        match TicketType::from_repr(card_type_number) {
             Some(card_type) => card_type,
-            None => CardType::Nothing,
+            None => TicketType::Nothing,
         }
     }
 
@@ -384,7 +384,7 @@ impl MifareCard {
         money_block.data[5] as u16 * 256 + money_block.data[6] as u16 >> 1
     }
 
-    pub fn expiration_date(&self, card_type: CardType) -> Date {
+    pub fn expiration_date(&self, card_type: TicketType) -> Date {
         let active_sector = self.active_sector();
         let expiration_block = self.sectors[active_sector].unwrap().data_blocks[0];
         let raw_timestamp = (expiration_block.data[6] as u32 * 65536)
@@ -395,7 +395,7 @@ impl MifareCard {
 
         // student cards last one school year and expire at the end of August
         // the next year
-        if let CardType::Student = card_type {
+        if let TicketType::Student = card_type {
             return Date::from_calendar_date(issue_date.year() + 1, Month::August, 31).unwrap();
         }
         // CharlieCards issued before 2011 expire 7 years after they're issued
