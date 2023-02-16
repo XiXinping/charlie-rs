@@ -7,7 +7,7 @@ mod card_types;
 mod checksums;
 mod mifare;
 use anyhow::{bail, Result};
-pub use card_types::{CardType, PassType};
+pub use card_types::{TicketType, Pass};
 pub use mifare::{detect_card, wait_for_card, NfcReader};
 use mifare::{CardError, MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
@@ -25,8 +25,8 @@ static CHARLIE_EPOCH: PrimitiveDateTime = datetime!(2003-01-01 0:00);
 pub struct CharlieCard {
     pub uid: [u8; 4],
     pub serial_num: u32,
-    pub card_type: CardType,
-    pub pass: Option<PassType>,
+    pub card_type: TicketType,
+    pub pass: Option<Pass>,
     pub money_value: u16,
     pub num_uses: u16,
     pub transaction_history: Vec<Transaction>,
@@ -126,7 +126,7 @@ impl CharlieCard {
         // the date of issue and adds 10 years minus 1 day if it's a non-student card, and 1 year
         // minues 1 day if it's a student card
         let new_issue_date = new_date
-            .replace_year(new_date.year() - if self.card_type == CardType::Student {1} else {10})?
+            .replace_year(new_date.year() - if self.card_type == TicketType::Student {1} else {10})?
             .next_day()
             .unwrap();
         // represent the new date in the form of number of minutes since 1/1/2003
@@ -214,7 +214,7 @@ impl CharlieCard {
         Ok(())
     }
 
-    pub fn update_card_type(&mut self, card_type: CardType) -> Result<()> {
+    pub fn update_card_type(&mut self, card_type: TicketType) -> Result<()> {
         let active_sector = self.card_data.active_sector();
         let mut card_type_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
 

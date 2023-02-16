@@ -2,13 +2,21 @@ use serde::Serialize;
 use time::Date;
 use strum_macros::{Display, FromRepr};
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+pub struct Pass {
+    start_validity: Date,
+    pass_type: TicketType,
+}
+
 #[derive(Clone, Copy, Debug, Display, Eq, FromRepr, PartialEq, Serialize)]
-pub enum CardType {
+pub enum TicketType {
     Nothing,
+
+    // regular card types
     Adult = 367,
     #[strum(serialize = "SV Adult")]
     SvAdult = 366,
-    Student = 428,
+    Student = 418,
     Senior = 419,
     #[strum(serialize = "TAP")]
     Tap = 420,
@@ -17,17 +25,8 @@ pub enum CardType {
     Employee = 414,
     Retiree = 415,
     PoliceFire = 416,
-}
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
-pub struct Pass {
-    start_validity: Date,
-    pass_type: PassType,
-}
-
-#[derive(Clone, Copy, Debug, Display, Eq, FromRepr, PartialEq, Serialize)]
-pub enum PassType {
-    Nothing,
+    // passes
     #[strum(serialize = "30 Day Local Bus Pass")]
     ThirtyDayLocalBusPass = 135,
     #[strum(serialize = "30 Day Inner Express Bus Pass")]
