@@ -1,5 +1,6 @@
 use serde::Serialize;
 use time::Date;
+use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter, EnumString, FromRepr};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
