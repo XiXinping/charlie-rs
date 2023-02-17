@@ -25,8 +25,12 @@ pub enum TicketType {
     Tap = 420,
     Blind = 417,
     Child = 426,
-    Employee = 414,
+    #[strum(serialize = "Employee ID Without Passback")]
+    EmployeeWithoutPassback = 410,
+    #[strum(serialize = "Employee ID With Passback")]
+    EmployeeWithPassback = 414,
     Retiree = 415,
+    #[strum(serialize = "Police/Fire")]
     PoliceFire = 416,
 
     // passes
