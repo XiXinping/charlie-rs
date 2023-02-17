@@ -1,7 +1,7 @@
 use serde::Serialize;
-use time::Date;
 use strum::IntoEnumIterator;
-use strum_macros::{Display, EnumIter, EnumString, FromRepr};
+use strum_macros::{AsRefStr, Display, EnumIter, EnumString, FromRepr};
+use time::Date;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 pub struct Pass {
@@ -9,7 +9,9 @@ pub struct Pass {
     pass_type: TicketType,
 }
 
-#[derive(Clone, Copy, Debug, Display, EnumIter, EnumString, Eq, FromRepr, PartialEq, Serialize)]
+#[derive(
+    AsRefStr, Clone, Copy, Debug, Display, EnumIter, EnumString, Eq, FromRepr, PartialEq, Serialize,
+)]
 pub enum TicketType {
     Nothing,
 
