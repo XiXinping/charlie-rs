@@ -280,7 +280,7 @@ impl CharlieCard {
     pub fn print_info(&self) {
         println!("\nCharlieCard Info:");
         println!("Serial Number: {}", self.serial_num);
-        println!("Card Type: {:?}", self.card_type);
+        println!("Card Type: {}", self.card_type);
         println!("Money Value: ${:.2}", self.money_value as f32 / 100.0);
         println!(
             "Expiration Date: {}\n",
@@ -376,7 +376,6 @@ impl MifareCard {
         // the first 10 bits in the second block of the active sector seems to
         // determine what type of card a CharlieCard is
         let card_type_number = ((block.data[0] as usize) << 2) + (block.data[1] as usize >> 6);
-        println!("{card_type_number}");
         match TicketType::from_repr(card_type_number) {
             Some(card_type) => card_type,
             None => TicketType::Nothing,
