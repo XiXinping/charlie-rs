@@ -249,6 +249,8 @@ impl CharlieCard {
         if let Some(ref mut sector) = self.card_data.sectors[active_sector] {
             sector.data_blocks[1] = card_type_block;
         }
+        self.card_type = card_type;
+
         Ok(())
     }
 
