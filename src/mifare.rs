@@ -69,7 +69,7 @@ pub struct Sector {
     pub trailer_block: TrailerBlock,
 }
 
-#[derive(Clone, Copy, Eq, PartialEq, Serialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 pub struct MifareCard {
     uid: [u8; 4],
     pub sectors: [Option<Sector>; 16],

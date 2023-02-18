@@ -21,7 +21,7 @@ use time_tz::{timezones::db::america::NEW_YORK, OffsetDateTimeExt, PrimitiveDate
 // the CharlieCard epoch begins on midnight on January 1st
 static CHARLIE_EPOCH: PrimitiveDateTime = datetime!(2003-01-01 0:00);
 
-#[derive(Serialize, Clone, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 pub struct CharlieCard {
     pub uid: [u8; 4],
     pub serial_num: u32,
@@ -269,6 +269,8 @@ impl CharlieCard {
         if self == &card {
             return Ok(());
         } else {
+            println!("Current CharlieCard: {:?}", self);
+            println!("Found CharlieCard: {:?}", card);
             return Err(CardError::WriteError.into());
         }
     }
