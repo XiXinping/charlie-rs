@@ -271,10 +271,10 @@ impl CharlieCard {
         let mut card = CharlieCard::new(reader, target)?;
 
         if self == &card {
-            println!("Current card: {:?}", self);
-            println!("Found card: {:?}", card);
             return Ok(());
         } else {
+            println!("Current card: {:?}", self);
+            println!("Found card: {:?}", card);
             return Err(CardError::WriteError.into());
         }
     }
