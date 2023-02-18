@@ -126,11 +126,9 @@ impl CharlieCard {
         // the date of issue and adds 10 years minus 1 day if it's a non-student card, and 1 year
         // minues 1 day if it's a student card
         let new_issue_date = if self.card_type == TicketType::Student {
-            Date::from_calendar_date(new_expiration.year() - 1, Month::September, 1)
-                .unwrap()
-                .midnight()
-                .assume_timezone(NEW_YORK)
-                .unwrap()
+            new_expiration
+                .replace_year(new_expiration.year() - 1)?
+                .saturating_add(Duration::DAY)
         } else {
             new_expiration
                 .replace_year(new_expiration.year() - 10)?
@@ -254,7 +252,7 @@ impl CharlieCard {
         }
         self.card_type = card_type;
         if card_type == TicketType::Student {
-            self.update_expiration(self.expiration)?;
+            self.update_expiration(self.expiration);
         }
 
         Ok(())
@@ -411,9 +409,10 @@ impl MifareCard {
         // student cards last one school year and expire at the end of August
         // the next year
         if let TicketType::Student = card_type {
-            return Date::from_calendar_date(issue_date.year() + 1, Month::August, 31)
+            return issue_date
+                .replace_year(issue_date.year() + 1)
                 .unwrap()
-                .midnight()
+                .saturating_sub(Duration::DAY)
                 .assume_timezone(NEW_YORK)
                 .unwrap();
         }
