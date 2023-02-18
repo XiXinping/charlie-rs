@@ -251,9 +251,7 @@ impl CharlieCard {
             sector.data_blocks[1] = card_type_block;
         }
         self.card_type = card_type;
-        if card_type == TicketType::Student {
-            self.update_expiration(self.expiration);
-        }
+        self.update_expiration(self.expiration);
 
         Ok(())
     }
