@@ -271,8 +271,8 @@ impl CharlieCard {
         if self == &card {
             return Ok(());
         } else {
-            println!("Current CharlieCard: {:?}", self);
-            println!("Found CharlieCard: {:?}", card);
+            println!("Current CharlieCard: {:?}", self.card_data);
+            println!("Found CharlieCard: {:?}", card.card_data);
             return Err(CardError::WriteError.into());
         }
     }
