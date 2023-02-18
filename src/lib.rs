@@ -30,8 +30,8 @@ pub struct CharlieCard {
     pub money_value: u16,
     pub num_uses: u16,
     pub transaction_history: Vec<Transaction>,
-    pub end_validity: OffsetDateTime,
-    pub expiration: OffsetDateTime,
+    pub end_validity: PrimitiveDateTime,
+    pub expiration: PrimitiveDateTime,
     card_data: MifareCard,
 }
 
@@ -117,7 +117,7 @@ impl CharlieCard {
         Ok(())
     }
 
-    pub fn update_expiration(&mut self, new_expiration: OffsetDateTime) -> Result<()> {
+    pub fn update_expiration(&mut self, new_expiration: PrimitiveDateTime) -> Result<()> {
         let active_sector = self.card_data.active_sector();
         // block that contains the expiration date
         let mut expiration_block = self.card_data.sectors[active_sector].unwrap().data_blocks[0];
@@ -135,8 +135,7 @@ impl CharlieCard {
                 .saturating_add(Duration::DAY)
         };
         // represent the new date in the form of number of minutes since 1/1/2003
-        let new_timestamp =
-            (new_issue_date - CHARLIE_EPOCH.assume_timezone(NEW_YORK).unwrap()).whole_minutes();
+        let new_timestamp = (new_issue_date - CHARLIE_EPOCH).whole_minutes();
 
         if new_timestamp > 0xFF_FF_FF || new_timestamp < 0 {
             bail!("Expiration date out of range!");
@@ -178,16 +177,14 @@ impl CharlieCard {
         Ok(())
     }
 
-    fn update_end_validity(&mut self, new_end_validity: OffsetDateTime) -> Result<()> {
+    fn update_end_validity(&mut self, new_end_validity: PrimitiveDateTime) -> Result<()> {
         let active_sector = self.card_data.active_sector();
         let mut end_validity_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
 
         // unlike the expiration date, the end validity timestamp stores the actual end validity
         // rather than the date of issue, and stores the number of 8 minute increments since
         // January 1, 2003, presumably to save space
-        let new_timestamp = (new_end_validity - CHARLIE_EPOCH.assume_timezone(NEW_YORK).unwrap())
-            .whole_minutes()
-            / 8;
+        let new_timestamp = (new_end_validity - CHARLIE_EPOCH).whole_minutes() / 8;
 
         if new_timestamp > 0xFF_FF_FF || new_timestamp < 0 {
             bail!("End validity out of range!");
@@ -397,7 +394,7 @@ impl MifareCard {
         money_block.data[5] as u16 * 256 + money_block.data[6] as u16 >> 1
     }
 
-    pub fn expiration(&self, card_type: TicketType) -> OffsetDateTime {
+    pub fn expiration(&self, card_type: TicketType) -> PrimitiveDateTime {
         let active_sector = self.active_sector();
         let expiration_block = self.sectors[active_sector].unwrap().data_blocks[0];
         let raw_timestamp = (expiration_block.data[6] as u32 * 65536)
@@ -412,18 +409,14 @@ impl MifareCard {
             return issue_date
                 .replace_year(issue_date.year() + 1)
                 .unwrap()
-                .saturating_sub(Duration::DAY)
-                .assume_timezone(NEW_YORK)
-                .unwrap();
+                .saturating_sub(Duration::DAY);
         }
         // CharlieCards issued before 2011 expire 7 years after they're issued
         if issue_date < datetime!(2011-01-01 0:00) {
             return issue_date
                 .replace_year(issue_date.year() + 7)
                 .unwrap()
-                .saturating_sub(Duration::DAY)
-                .assume_timezone(NEW_YORK)
-                .unwrap();
+                .saturating_sub(Duration::DAY);
         }
 
         // CharlieCards expire one day before 10 years after their date of issue
@@ -431,11 +424,9 @@ impl MifareCard {
             .replace_year(issue_date.year() + 10)
             .unwrap()
             .saturating_sub(Duration::DAY)
-            .assume_timezone(NEW_YORK)
-            .unwrap()
     }
 
-    pub fn end_validity(&self) -> OffsetDateTime {
+    pub fn end_validity(&self) -> PrimitiveDateTime {
         let active_sector = self.active_sector();
         let end_validity_block = self.sectors[active_sector].unwrap().data_blocks[1];
         // the end validity timestamp shares byte 1 with another variable, occupying only 3 bits
@@ -446,9 +437,7 @@ impl MifareCard {
             & 0x1F_FF_FF;
         // the end validity date is the number of 8 minute increments (cause why not?) since
         // January 1st, 2003
-        (CHARLIE_EPOCH + Duration::minutes(raw_timestamp * 8))
-            .assume_timezone(NEW_YORK)
-            .unwrap()
+        CHARLIE_EPOCH + Duration::minutes(raw_timestamp * 8)
     }
 
     fn transaction_history(&self) -> Vec<Transaction> {
