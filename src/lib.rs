@@ -30,8 +30,8 @@ pub struct CharlieCard {
     pub money_value: u16,
     pub num_uses: u16,
     pub transaction_history: Vec<Transaction>,
-    pub end_validity: Date,
-    pub expiration_date: Date,
+    pub end_validity: OffsetDateTime,
+    pub expiration: OffsetDateTime,
     card_data: MifareCard,
 }
 
@@ -60,8 +60,8 @@ impl CharlieCard {
         }
 
         let card_type = card_data.card_type();
-        let expiration_date = card_data.expiration_date(card_type);
-        let end_validity = card_data.end_validity_date();
+        let expiration = card_data.expiration(card_type);
+        let end_validity = card_data.end_validity();
 
         Ok(CharlieCard {
             uid,
@@ -72,7 +72,7 @@ impl CharlieCard {
             money_value: card_data.money_value(),
             transaction_history: card_data.transaction_history(),
             end_validity,
-            expiration_date,
+            expiration,
             card_data,
         })
     }
@@ -117,7 +117,7 @@ impl CharlieCard {
         Ok(())
     }
 
-    pub fn update_expiration(&mut self, new_date: Date) -> Result<()> {
+    pub fn update_expiration(&mut self, new_expiration: OffsetDateTime) -> Result<()> {
         let active_sector = self.card_data.active_sector();
         // block that contains the expiration date
         let mut expiration_block = self.card_data.sectors[active_sector].unwrap().data_blocks[0];
@@ -125,19 +125,20 @@ impl CharlieCard {
         // the expiration date is actually not recorded on the card, rather the card only stores
         // the date of issue and adds 10 years minus 1 day if it's a non-student card, and 1 year
         // minues 1 day if it's a student card
-        let new_issue_date = new_date
-            .replace_year(
-                new_date.year()
-                    - if self.card_type == TicketType::Student {
-                        1
-                    } else {
-                        10
-                    },
-            )?
-            .next_day()
-            .unwrap();
+        let new_issue_date = if self.card_type == TicketType::Student {
+            Date::from_calendar_date(new_expiration.year() - 1, Month::September, 1)
+                .unwrap()
+                .midnight()
+                .assume_timezone(NEW_YORK)
+                .unwrap()
+        } else {
+            new_expiration
+                .replace_year(new_expiration.year() - 10)?
+                .saturating_add(Duration::DAY)
+        };
         // represent the new date in the form of number of minutes since 1/1/2003
-        let new_timestamp = (new_issue_date.midnight() - CHARLIE_EPOCH).whole_minutes();
+        let new_timestamp =
+            (new_issue_date - CHARLIE_EPOCH.assume_timezone(NEW_YORK).unwrap()).whole_minutes();
 
         if new_timestamp > 0xFF_FF_FF || new_timestamp < 0 {
             bail!("Expiration date out of range!");
@@ -174,19 +175,21 @@ impl CharlieCard {
             sector.data_blocks[0] = expiration_block;
         }
 
-        self.expiration_date = new_date;
+        self.expiration = new_expiration;
 
         Ok(())
     }
 
-    fn update_end_validity(&mut self, new_end_validity: Date) -> Result<()> {
+    fn update_end_validity(&mut self, new_end_validity: OffsetDateTime) -> Result<()> {
         let active_sector = self.card_data.active_sector();
         let mut end_validity_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
 
         // unlike the expiration date, the end validity timestamp stores the actual end validity
         // rather than the date of issue, and stores the number of 8 minute increments since
         // January 1, 2003, presumably to save space
-        let new_timestamp = (new_end_validity.midnight() - CHARLIE_EPOCH).whole_minutes() / 8;
+        let new_timestamp = (new_end_validity - CHARLIE_EPOCH.assume_timezone(NEW_YORK).unwrap())
+            .whole_minutes()
+            / 8;
 
         if new_timestamp > 0xFF_FF_FF || new_timestamp < 0 {
             bail!("End validity out of range!");
@@ -250,6 +253,9 @@ impl CharlieCard {
             sector.data_blocks[1] = card_type_block;
         }
         self.card_type = card_type;
+        if card_type == TicketType::Student {
+            self.update_expiration(self.expiration)?;
+        }
 
         Ok(())
     }
@@ -271,8 +277,6 @@ impl CharlieCard {
         if self == &card {
             return Ok(());
         } else {
-            println!("Current CharlieCard: {:?}", self.card_data);
-            println!("Found CharlieCard: {:?}", card.card_data);
             return Err(CardError::WriteError.into());
         }
     }
@@ -288,7 +292,7 @@ impl CharlieCard {
         println!("Money Value: ${:.2}", self.money_value as f32 / 100.0);
         println!(
             "Expiration Date: {}\n",
-            self.expiration_date
+            self.expiration
                 .format(&format_description!(
                     "[weekday], [month repr:long] [day], [year]"
                 ))
@@ -395,7 +399,7 @@ impl MifareCard {
         money_block.data[5] as u16 * 256 + money_block.data[6] as u16 >> 1
     }
 
-    pub fn expiration_date(&self, card_type: TicketType) -> Date {
+    pub fn expiration(&self, card_type: TicketType) -> OffsetDateTime {
         let active_sector = self.active_sector();
         let expiration_block = self.sectors[active_sector].unwrap().data_blocks[0];
         let raw_timestamp = (expiration_block.data[6] as u32 * 65536)
@@ -407,15 +411,19 @@ impl MifareCard {
         // student cards last one school year and expire at the end of August
         // the next year
         if let TicketType::Student = card_type {
-            return Date::from_calendar_date(issue_date.year() + 1, Month::August, 31).unwrap();
+            return Date::from_calendar_date(issue_date.year() + 1, Month::August, 31)
+                .unwrap()
+                .midnight()
+                .assume_timezone(NEW_YORK)
+                .unwrap();
         }
         // CharlieCards issued before 2011 expire 7 years after they're issued
         if issue_date < datetime!(2011-01-01 0:00) {
             return issue_date
                 .replace_year(issue_date.year() + 7)
                 .unwrap()
-                .date()
-                .previous_day()
+                .saturating_sub(Duration::DAY)
+                .assume_timezone(NEW_YORK)
                 .unwrap();
         }
 
@@ -423,12 +431,12 @@ impl MifareCard {
         issue_date
             .replace_year(issue_date.year() + 10)
             .unwrap()
-            .date()
-            .previous_day()
+            .saturating_sub(Duration::DAY)
+            .assume_timezone(NEW_YORK)
             .unwrap()
     }
 
-    pub fn end_validity_date(&self) -> Date {
+    pub fn end_validity(&self) -> OffsetDateTime {
         let active_sector = self.active_sector();
         let end_validity_block = self.sectors[active_sector].unwrap().data_blocks[1];
         // the end validity timestamp shares byte 1 with another variable, occupying only 3 bits
@@ -439,7 +447,9 @@ impl MifareCard {
             & 0x1F_FF_FF;
         // the end validity date is the number of 8 minute increments (cause why not?) since
         // January 1st, 2003
-        (CHARLIE_EPOCH + Duration::minutes(raw_timestamp * 8)).date()
+        (CHARLIE_EPOCH + Duration::minutes(raw_timestamp * 8))
+            .assume_timezone(NEW_YORK)
+            .unwrap()
     }
 
     fn transaction_history(&self) -> Vec<Transaction> {
