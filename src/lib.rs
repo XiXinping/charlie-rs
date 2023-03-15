@@ -5,6 +5,7 @@ extern crate nfc1 as nfc;
 extern crate serde;
 mod card_types;
 mod checksums;
+mod fare_gates;
 mod mifare;
 use anyhow::{bail, Result};
 pub use card_types::{Pass, TicketType};
