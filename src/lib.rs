@@ -9,6 +9,7 @@ mod fare_gates;
 mod mifare;
 use anyhow::{bail, Result};
 pub use card_types::{Pass, TicketType};
+use fare_gates::Location;
 pub use mifare::{detect_card, wait_for_card, NfcReader};
 use mifare::{CardError, MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
@@ -318,17 +319,19 @@ impl CharlieCard {
 pub struct Transaction {
     #[serde(with = "timestamp")]
     pub timestamp: OffsetDateTime,
+    pub location: Location,
 }
 
 impl Transaction {
     // generates a new transaction based on the time it occurred
-    fn new(raw_timestamp: u32) -> Transaction {
+    fn new(raw_timestamp: u32, fare_machine_id: u16) -> Transaction {
         let raw_timestamp_seconds = Duration::seconds(raw_timestamp as i64 * 60);
 
         Transaction {
             timestamp: (CHARLIE_EPOCH + raw_timestamp_seconds)
                 .assume_timezone(NEW_YORK)
                 .unwrap(),
+            location: Location::from_machine_id(fare_machine_id),
         }
     }
 }
@@ -441,18 +444,36 @@ impl MifareCard {
         CHARLIE_EPOCH + Duration::minutes(raw_timestamp * 8)
     }
 
+    fn last_fare_machine_id(&self) -> u16 {
+        let active_sector = self.active_sector();
+        self.sectors[active_sector].unwrap().data_blocks[0].data[4] as u16 * 256
+            + self.sectors[active_sector].unwrap().data_blocks[0].data[5] as u16
+            >> 3
+    }
+
+    fn last_raw_timestamp(&self) -> u32 {
+        let active_sector = self.active_sector();
+        self.sectors[active_sector].unwrap().data_blocks[0].data[0] as u32 * 65536
+            + self.sectors[active_sector].unwrap().data_blocks[0].data[1] as u32 * 256
+            + self.sectors[active_sector].unwrap().data_blocks[0].data[2] as u32
+    }
+
+    // CharlieCards keep a log of the last 10 transactions including the time they occurred and
+    // the ID of the fare machine they were used on
     fn transaction_history(&self) -> Vec<Transaction> {
-        // CharlieCards keep a log of the last 10 transactions and their
-        // timestamps the timestamps record the number of minutes between
-        // midnight on January 1, 2003 and the time of the transaction
+        let transactions = Vec::new();
         let mut raw_timestamps = Vec::new();
-        for sector_num in 6..8 {
-            for (_, block) in self.sectors[sector_num]
+        let mut fare_machine_ids = Vec::new();
+        for sector_num in 6..=7 {
+            for (block_num, block) in self.sectors[sector_num]
                 .unwrap()
                 .data_blocks
                 .iter()
                 .enumerate()
             {
+                if sector_num == 7 && block_num == 2 {
+                    continue;
+                }
                 // each block has two three-byte timestamps
                 let first_timestamp = (block.data[0] as u32 * 65536)
                     + (block.data[1] as u32 * 256)
@@ -462,15 +483,42 @@ impl MifareCard {
                     + (block.data[9] as u32);
                 raw_timestamps.push(first_timestamp);
                 raw_timestamps.push(second_timestamp);
+
+                // each block also has a two byte fare machine ID
+                let first_machine_id = block.data[3] as u16 * 256 + block.data[4] as u16 >> 3;
+                let second_machine_id = block.data[10] as u16 * 256 + block.data[11] as u16 >> 3;
+                fare_machine_ids.push(first_machine_id);
+                fare_machine_ids.push(second_machine_id);
+
+                if first_timestamp != 0 && first_machine_id != 0 {
+                    transactions.push((first_timestamp, first_machine_id))
+                }
+                if second_timestamp != 0 && second_machine_id != 0 {
+                    transactions.push((second_timestamp, second_machine_id))
+                }
             }
         }
-        // remove any blank timestamps
-        raw_timestamps = raw_timestamps.into_iter().filter(|t| *t != 0).collect();
-        // sort the timestamps in descending order
-        raw_timestamps.sort_by(|a, b| b.cmp(a));
+
+        let last_machine_id = self.last_fare_machine_id();
+        let last_raw_timestamp = self.last_raw_timestamp();
+
+        let last_transaction_index = if let Some(index) = transactions
+            .iter()
+            .position(|x| x.0 == last_raw_timestamp && x.1 == last_machine_id)
+        {
+            index
+        } else {
+            0
+        };
+
+        transactions.rotate_left(last_transaction_index);
 
         // generate a transaction for each timestamp
-        raw_timestamps.into_iter().map(Transaction::new).collect()
+        for (raw_timestamp)
+        transactions
+            .into_iter()
+            .map(|t| Transaction::new(t.0, t.1))
+            .collect()
     }
 }
 
