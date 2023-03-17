@@ -4,7 +4,6 @@ use strum;
 use strum_macros::Display;
 use strum_macros::EnumString;
 
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize)]
 pub enum Location {
     Bus(u16),
@@ -15,7 +14,7 @@ pub enum Location {
 impl Location {
     pub fn from_machine_id(gate_id: u16) -> Location {
         if let Some(location) = FARE_GATE_IDS.get(&gate_id) {
-            *location
+            location.clone()
         } else {
             Location::Unknown
         }
