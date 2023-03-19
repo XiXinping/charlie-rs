@@ -461,7 +461,7 @@ impl MifareCard {
     // CharlieCards keep a log of the last 10 transactions including the time they occurred and
     // the ID of the fare machine they were used on
     fn transaction_history(&self) -> Vec<Transaction> {
-        let transactions = Vec::new();
+        let mut transactions = Vec::new();
         let mut raw_timestamps = Vec::new();
         let mut fare_machine_ids = Vec::new();
         for sector_num in 6..=7 {
@@ -514,7 +514,6 @@ impl MifareCard {
         transactions.rotate_left(last_transaction_index);
 
         // generate a transaction for each timestamp
-        for (raw_timestamp)
         transactions
             .into_iter()
             .map(|t| Transaction::new(t.0, t.1))
