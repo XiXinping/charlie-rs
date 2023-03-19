@@ -1,5 +1,6 @@
 use phf::{phf_ordered_map, OrderedMap};
 use serde::Serialize;
+use std::fmt;
 use strum;
 use strum_macros::Display;
 use strum_macros::EnumString;
@@ -9,6 +10,19 @@ pub enum Location {
     Bus(u16),
     Station(Station),
     Unknown,
+}
+
+impl fmt::Display for Location {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // The `f` value implements the `Write` trait, which is what the
+        // write! macro is expecting. Note that this formatting ignores the
+        // various flags provided to format strings.
+        match self {
+            Location::Bus(number) => write!(f, "Bus #{number}"),
+            Location::Station(station) => write!(f, "{}", station.name),
+            Location::Unknown => write!(f, "Unkown"),
+        }
+    }
 }
 
 impl Location {

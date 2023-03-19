@@ -299,15 +299,15 @@ impl CharlieCard {
 
         if let Some(transaction) = self.last_transaction() {
             // get the timestamp of the transaction
-            let transaction_timestamp = transaction.timestamp;
+            let timestamp = transaction.timestamp;
+            let location = transaction.location;
             // format the timestamp into something that's not ugly as sin
             let datetime_format = format_description!(
                 "[weekday], [month repr:long] [day], [year] [hour repr:12]:[minute] [period] "
             );
-            println!(
-                "Last Transaction: {}",
-                transaction_timestamp.format(&datetime_format).unwrap()
-            );
+            println!("Last Transaction:");
+            println!("Time: {}", timestamp.format(&datetime_format).unwrap());
+            println!("Location: {}", location);
         } else {
             // if there aren't any transactions yet
             println!("Last Transaction: Never");
