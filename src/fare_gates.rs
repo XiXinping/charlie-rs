@@ -1,6 +1,5 @@
 use phf::{phf_ordered_map, OrderedMap};
 use serde::Serialize;
-use std::fmt;
 use strum;
 use strum_macros::Display;
 use strum_macros::EnumString;
@@ -12,23 +11,10 @@ pub enum Location {
     Unknown,
 }
 
-impl fmt::Display for Location {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // The `f` value implements the `Write` trait, which is what the
-        // write! macro is expecting. Note that this formatting ignores the
-        // various flags provided to format strings.
-        match self {
-            Location::Bus(number) => write!(f, "Bus #{number}"),
-            Location::Station(station) => write!(f, "{}", station.name),
-            Location::Unknown => write!(f, "Unkown"),
-        }
-    }
-}
-
 impl Location {
     pub fn from_machine_id(gate_id: u16) -> Location {
         if let Some(location) = FARE_GATE_IDS.get(&gate_id) {
-            location.clone()
+            *location
         } else {
             Location::Unknown
         }
@@ -54,6 +40,29 @@ pub enum SubwayLine {
 #[derive(Copy, Clone, Debug, Display, Eq, PartialEq, Hash, Serialize)]
 #[strum(serialize_all = "title_case")]
 pub enum StationName {
+    Alewife,
+    Davis,
+    Porter,
+    Harvard,
+    Central,
+    #[strum(serialize = "Kendall/MIT")]
+    KendallMit,
+    #[strum(serialize = "Charles/MGH")]
+    CharlesMgh,
+    ParkStreet,
+    Broadway,
+    Andrew,
+    #[strum(serialize = "JFK/UMass")]
+    JfkUmass,
+    SavinHill,
+    FieldsCorner,
+    Shawmut,
+    Ashmont,
+    NorthQuincy,
+    Wollaston,
+    QunicyCenter,
+    QuincyAdams,
+    Braintree,
     OakGrove,
     MaldenCenter,
     Wellington,
@@ -89,6 +98,27 @@ pub enum StationName {
 }
 
 const FARE_GATE_IDS: OrderedMap<u16, Location> = phf_ordered_map! {
+    // Davis
+    6766u16 => Location::Station(Station {name: StationName::Davis, subway_lines: &[SubwayLine::RedLine]}),
+    6767u16 => Location::Station(Station {name: StationName::Davis, subway_lines: &[SubwayLine::RedLine]}),
+    6768u16 => Location::Station(Station {name: StationName::Davis, subway_lines: &[SubwayLine::RedLine]}),
+    6769u16 => Location::Station(Station {name: StationName::Davis, subway_lines: &[SubwayLine::RedLine]}),
+    6770u16 => Location::Station(Station {name: StationName::Davis, subway_lines: &[SubwayLine::RedLine]}),
+    6771u16 => Location::Station(Station {name: StationName::Davis, subway_lines: &[SubwayLine::RedLine]}),
+    6772u16 => Location::Station(Station {name: StationName::Davis, subway_lines: &[SubwayLine::RedLine]}),
+    2167u16 => Location::Station(Station {name: StationName::Davis, subway_lines: &[SubwayLine::RedLine]}),
+    7020u16 => Location::Station(Station {name: StationName::Davis, subway_lines: &[SubwayLine::RedLine]}),
+    // Porter
+    6781u16 => Location::Station(Station {name: StationName::Porter, subway_lines: &[SubwayLine::RedLine]}),
+    6780u16 => Location::Station(Station {name: StationName::Porter, subway_lines: &[SubwayLine::RedLine]}),
+    6779u16 => Location::Station(Station {name: StationName::Porter, subway_lines: &[SubwayLine::RedLine]}),
+    6778u16 => Location::Station(Station {name: StationName::Porter, subway_lines: &[SubwayLine::RedLine]}),
+    6777u16 => Location::Station(Station {name: StationName::Porter, subway_lines: &[SubwayLine::RedLine]}),
+    6776u16 => Location::Station(Station {name: StationName::Porter, subway_lines: &[SubwayLine::RedLine]}),
+    6775u16 => Location::Station(Station {name: StationName::Porter, subway_lines: &[SubwayLine::RedLine]}),
+    2168u16 => Location::Station(Station {name: StationName::Porter, subway_lines: &[SubwayLine::RedLine]}),
+    7021u16 => Location::Station(Station {name: StationName::Porter, subway_lines: &[SubwayLine::RedLine]}),
+    6782u16 => Location::Station(Station {name: StationName::Porter, subway_lines: &[SubwayLine::RedLine]}),
     // Oak Grove
     6640u16 => Location::Station(Station {name: StationName::OakGrove, subway_lines: &[SubwayLine::OrangeLine]}),
     6641u16 => Location::Station(Station {name: StationName::OakGrove, subway_lines: &[SubwayLine::OrangeLine]}),
@@ -355,7 +385,7 @@ const FARE_GATE_IDS: OrderedMap<u16, Location> = phf_ordered_map! {
     6971u16 => Location::Station(Station {name: StationName::WoodIsland, subway_lines: &[SubwayLine::BlueLine]}),
     // Orient Heights
     // needs checking
-    1u16 => Location::Station(Station {name: StationName::OrientHeights, subway_lines: &[SubwayLine::BlueLine]}), // !!!
+    6621u16 => Location::Station(Station {name: StationName::OrientHeights, subway_lines: &[SubwayLine::BlueLine]}), // !!!
     6622u16 => Location::Station(Station {name: StationName::OrientHeights, subway_lines: &[SubwayLine::BlueLine]}),
     6623u16 => Location::Station(Station {name: StationName::OrientHeights, subway_lines: &[SubwayLine::BlueLine]}),
     2014u16 => Location::Station(Station {name: StationName::OrientHeights, subway_lines: &[SubwayLine::BlueLine]}),
