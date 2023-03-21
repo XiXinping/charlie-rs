@@ -19,8 +19,8 @@ impl fmt::Display for Location {
         // various flags provided to format strings.
         match self {
             Location::Bus(number) => write!(f, "Bus #{number}"),
-            Location::Station(station) => write!(f, "{}", station.name),
-            Location::Unknown => write!(f, "Unkown"),
+            Location::Station(station) => write!(f, "{station}"),
+            Location::Unknown => write!(f, "Unknown"),
         }
     }
 }
@@ -39,6 +39,15 @@ impl Location {
 pub struct Station {
     name: StationName,
     subway_lines: &'static [SubwayLine],
+}
+
+impl fmt::Display for Station {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // The `f` value implements the `Write` trait, which is what the
+        // write! macro is expecting. Note that this formatting ignores the
+        // various flags provided to format strings.
+        write!(f, "{}", self.name)
+    }
 }
 
 #[derive(Copy, Clone, Debug, Display, Eq, PartialEq, Serialize)]
