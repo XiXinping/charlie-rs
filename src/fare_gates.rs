@@ -19,7 +19,14 @@ impl fmt::Display for Location {
         // various flags provided to format strings.
         match self {
             Location::Bus(number) => write!(f, "Bus #{number}"),
-            Location::Station(station) => write!(f, "{station}"),
+            Location::Station(station) => {
+                write!(f, "Station: {station} ");
+                if station.subway_lines.len() > 1 {
+                    write!(f, "Subway Lines: {:?}", station.subway_lines)
+                } else {
+                    write!(f, "Subway Line: {}", station.subway_lines[0])
+                }
+            },
             Location::Unknown => write!(f, "Unknown"),
         }
     }
