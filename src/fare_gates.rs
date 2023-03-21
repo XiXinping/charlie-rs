@@ -20,13 +20,23 @@ impl fmt::Display for Location {
         match self {
             Location::Bus(number) => write!(f, "Bus #{number}"),
             Location::Station(station) => {
-                write!(f, "Station: {station} ");
-                if station.subway_lines.len() > 1 {
-                    write!(f, "Subway Lines: {:?}", station.subway_lines)
-                } else {
-                    write!(f, "Subway Line: {}", station.subway_lines[0])
+                if station.subway_lines.len() == 1 {
+                    write!(f, "{} - ", station.subway_lines[0]);
+                } else if station.subway_lines.len() == 2 {
+                    write!(
+                        f,
+                        "{} and {} - ",
+                        station.subway_lines[0], station.subway_lines[1]
+                    );
+                } else if station.subway_lines.len() == 3 {
+                    write!(
+                        f,
+                        "{}, {}, and {} - ",
+                        station.subway_lines[0], station.subway_lines[1], station.subway_lines[2]
+                    );
                 }
-            },
+                write!(f, "{station}")
+            }
             Location::Unknown => write!(f, "Unknown"),
         }
     }
