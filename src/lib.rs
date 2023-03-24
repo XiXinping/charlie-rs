@@ -1,3 +1,45 @@
+//! 
+//!
+//! ```text
+//!  ______________________________________  
+//! |                        Chahlie Cahd  |  
+//! |                     -----------------|  
+//! |######################################|  
+//! |        #     _||_       ##    ##    #|  
+//! |        #    /(ツ) []  　 ##    ##    #|  
+//! |        #    \-||--/     ##    ##    #|  
+//! |        #      ||        ##    ##    #|  
+//! |######################################|  
+//! |  (T) Free the T                      |  
+//! |______________________________________|  
+//! ```
+//!
+//! Library for interacting with MBTA CharlieCards
+//!
+//! # Quick Start
+//! 
+//! ```
+//! extern crate charlie;
+//! use charlie::{CharlieCard, NfcReader};
+//! use std::time::Duration;
+//! 
+//! let mut nfc_reader = NfcReader::build()?;
+//! // wait 15 seconds for a card to appear on the reader
+//! println!("Place a CharlieCard on the reader!");
+//! let target_card = charlie::wait_for_card(&mut nfc_reader, Duration::from_secs(15))?;
+//!
+//! // create a new CharlieCard
+//! let mut charlie_card = CharlieCard::new(&mut nfc_reader, target_card)?;
+//!
+//! charlie_card.print_info();
+//! // set money value to $100.00
+//! charlie_card.update_money(100_00);
+//! // write the updated money value to the physical card
+//! charlie_card.write_card();
+//! // make sure everything wrote correctly
+//! charlie_card.verify_write();
+//! ```
+
 #![allow(dead_code)]
 #![allow(unused)]
 extern crate anyhow;
@@ -23,6 +65,7 @@ use time_tz::{timezones::db::america::NEW_YORK, OffsetDateTimeExt, PrimitiveDate
 // the CharlieCard epoch begins on midnight on January 1st
 static CHARLIE_EPOCH: PrimitiveDateTime = datetime!(2003-01-01 0:00);
 
+/// Contains CharlieCard information and raw card data 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 pub struct CharlieCard {
     pub uid: [u8; 4],
@@ -521,6 +564,7 @@ impl MifareCard {
     }
 }
 
+/// Prints a beautiful ASCII CharlieCard
 pub fn print_charlie() {
     let ascii_charlie = " _______________________________ \n\
                          |                  Chahlie Cahd |\n\
