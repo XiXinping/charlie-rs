@@ -9,6 +9,7 @@ pub struct Pass {
     pass_type: TicketType,
 }
 
+/// Different types of cards (Student, Senior, Employee, etc.)
 #[derive(
     AsRefStr, Clone, Copy, Debug, Display, EnumIter, EnumString, Eq, FromRepr, PartialEq, Serialize,
 )]

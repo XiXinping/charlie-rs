@@ -87,6 +87,7 @@ pub enum CardError {
     WriteError,
 }
 
+/// Tries to find a card for a specific amount of time
 pub fn wait_for_card(reader: &mut NfcReader, timeout: Duration) -> Result<Target> {
     let timer = Instant::now();
 
@@ -100,6 +101,7 @@ pub fn wait_for_card(reader: &mut NfcReader, timeout: Duration) -> Result<Target
     Err(CardError::CardNotFound.into())
 }
 
+/// Try to find a card. Returns None if no card is found, and an error if something went wrong
 pub fn detect_card(reader: &mut NfcReader) -> Result<Option<Target>> {
     let target = reader.with_device_mut(|device| -> Result<Target, nfc::Error> {
         Ok(device.initiator_select_passive_target(&MIFARE_MODULATION)?)
