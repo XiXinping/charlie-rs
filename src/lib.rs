@@ -51,7 +51,7 @@ mod fare_gates;
 mod mifare;
 use anyhow::{bail, Result};
 pub use card_types::{Pass, TicketType};
-use fare_gates::Location;
+pub use fare_gates::Location;
 pub use mifare::{detect_card, wait_for_card, NfcReader};
 use mifare::{CardError, MifareCard, Sector};
 use nfc::{target_info::TargetInfo, Target};
