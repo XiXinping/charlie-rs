@@ -268,10 +268,10 @@ const FARE_GATE_IDS: OrderedMap<u16, Location> = phf_ordered_map! {
     6647u16 => Location::Station(Station {name: StationName::MaldenCenter, subway_lines: &[SubwayLine::OrangeLine]}),
     6648u16 => Location::Station(Station {name: StationName::MaldenCenter, subway_lines: &[SubwayLine::OrangeLine]}),
     // Chinatown
+    6704u16 => Location::Station(Station {name: StationName::MaldenCenter, subway_lines: &[SubwayLine::OrangeLine]}),
     6705u16 => Location::Station(Station {name: StationName::Chinatown, subway_lines: &[SubwayLine::OrangeLine]}),
     2099u16 => Location::Station(Station {name: StationName::Chinatown, subway_lines: &[SubwayLine::OrangeLine]}),
     7003u16 => Location::Station(Station {name: StationName::Chinatown, subway_lines: &[SubwayLine::OrangeLine]}),
-    2u16 => Location::Station(Station {name: StationName::Chinatown, subway_lines: &[SubwayLine::OrangeLine]}), // !!!
     7002u16 => Location::Station(Station {name: StationName::Chinatown, subway_lines: &[SubwayLine::OrangeLine]}),
     2096u16 => Location::Station(Station {name: StationName::Chinatown, subway_lines: &[SubwayLine::OrangeLine]}),
     6702u16 => Location::Station(Station {name: StationName::Chinatown, subway_lines: &[SubwayLine::OrangeLine]}),
