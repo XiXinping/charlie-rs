@@ -1,4 +1,4 @@
-//! 
+//!
 //!
 //! ```text
 //!  ______________________________________  
@@ -17,12 +17,12 @@
 //! Library for interacting with MBTA CharlieCards
 //!
 //! # Quick Start
-//! 
+//!
 //! ```
 //! extern crate charlie;
 //! use charlie::{CharlieCard, NfcReader};
 //! use std::time::Duration;
-//! 
+//!
 //! let mut nfc_reader = NfcReader::build()?;
 //! // wait 15 seconds for a card to appear on the reader
 //! println!("Place a CharlieCard on the reader!");
@@ -65,7 +65,7 @@ use time_tz::{timezones::db::america::NEW_YORK, OffsetDateTimeExt, PrimitiveDate
 // the CharlieCard epoch begins on midnight on January 1st
 static CHARLIE_EPOCH: PrimitiveDateTime = datetime!(2003-01-01 0:00);
 
-/// Contains CharlieCard information and raw card data 
+/// Contains CharlieCard information and raw card data
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 pub struct CharlieCard {
     pub uid: [u8; 4],
@@ -358,6 +358,7 @@ impl CharlieCard {
     }
 }
 
+/// Contains information about a transaction including the time and the location
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
 pub struct Transaction {
     #[serde(with = "timestamp")]

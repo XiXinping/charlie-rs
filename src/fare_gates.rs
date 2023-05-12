@@ -5,6 +5,7 @@ use strum;
 use strum_macros::Display;
 use strum_macros::EnumString;
 
+/// The location of a fare gate. Can either be a subway station or a particular bus
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize)]
 pub enum Location {
     Bus(u16),
