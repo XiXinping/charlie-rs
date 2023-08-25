@@ -222,7 +222,7 @@ impl CharlieCard {
         Ok(())
     }
 
-    fn update_end_validity(&mut self, new_end_validity: PrimitiveDateTime) -> Result<()> {
+    pub fn update_end_validity(&mut self, new_end_validity: PrimitiveDateTime) -> Result<()> {
         let active_sector = self.card_data.active_sector();
         let mut end_validity_block = self.card_data.sectors[active_sector].unwrap().data_blocks[1];
 
