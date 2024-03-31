@@ -269,7 +269,7 @@ const FARE_GATE_IDS: OrderedMap<u16, Location> = phf_ordered_map! {
     6647u16 => Location::Station(Station {name: StationName::MaldenCenter, subway_lines: &[SubwayLine::OrangeLine]}),
     6648u16 => Location::Station(Station {name: StationName::MaldenCenter, subway_lines: &[SubwayLine::OrangeLine]}),
     // Chinatown
-    6704u16 => Location::Station(Station {name: StationName::MaldenCenter, subway_lines: &[SubwayLine::OrangeLine]}),
+    6704u16 => Location::Station(Station {name: StationName::Chinatown, subway_lines: &[SubwayLine::OrangeLine]}),
     6705u16 => Location::Station(Station {name: StationName::Chinatown, subway_lines: &[SubwayLine::OrangeLine]}),
     2099u16 => Location::Station(Station {name: StationName::Chinatown, subway_lines: &[SubwayLine::OrangeLine]}),
     7003u16 => Location::Station(Station {name: StationName::Chinatown, subway_lines: &[SubwayLine::OrangeLine]}),
@@ -425,8 +425,7 @@ const FARE_GATE_IDS: OrderedMap<u16, Location> = phf_ordered_map! {
     2010u16 => Location::Station(Station {name: StationName::WoodIsland, subway_lines: &[SubwayLine::BlueLine]}),
     6971u16 => Location::Station(Station {name: StationName::WoodIsland, subway_lines: &[SubwayLine::BlueLine]}),
     // Orient Heights
-    // needs checking
-    6621u16 => Location::Station(Station {name: StationName::OrientHeights, subway_lines: &[SubwayLine::BlueLine]}), // !!!
+    6621u16 => Location::Station(Station {name: StationName::OrientHeights, subway_lines: &[SubwayLine::BlueLine]}),
     6622u16 => Location::Station(Station {name: StationName::OrientHeights, subway_lines: &[SubwayLine::BlueLine]}),
     6623u16 => Location::Station(Station {name: StationName::OrientHeights, subway_lines: &[SubwayLine::BlueLine]}),
     2014u16 => Location::Station(Station {name: StationName::OrientHeights, subway_lines: &[SubwayLine::BlueLine]}),
