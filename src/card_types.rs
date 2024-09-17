@@ -22,6 +22,7 @@ pub enum TicketType {
     SvAdult = 366,
     Student = 418,
     Senior = 419,
+    Youth = 585,
     #[strum(serialize = "TAP")]
     Tap = 420,
     Blind = 417,
